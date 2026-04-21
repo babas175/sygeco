@@ -2,20 +2,45 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 export default function AdminDashboard() {
   const pathname = usePathname();
+  const [open, setOpen] = useState(false);
 
   return (
     <div className="flex h-screen bg-gray-100 text-gray-900">
+
+      {/* OVERLAY MOBILE */}
+      {open && (
+        <div
+          className="fixed inset-0 bg-black/40 z-40 md:hidden"
+          onClick={() => setOpen(false)}
+        />
+      )}
+
       {/* SIDEBAR */}
-      <aside className="w-64 bg-[#0b3aa5] text-white flex flex-col justify-between">
+      <aside
+        className={`fixed md:static top-0 left-0 h-full w-64 bg-[#0b3aa5] text-white flex flex-col justify-between transform transition-transform duration-300 z-50
+        ${open ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
+      >
         <div>
-          <div className="p-4 border-b border-white/10">
-            <h1 className="font-bold text-lg">SYGECO</h1>
-            <p className="text-xs text-blue-200">
-              Système de Gestion des Écoles
-            </p>
+          {/* HEADER SIDEBAR */}
+          <div className="p-4 border-b border-white/10 flex justify-between items-center">
+            <div>
+              <h1 className="font-bold text-lg">SYGECO</h1>
+              <p className="text-xs text-blue-200">
+                Système de Gestion des Écoles
+              </p>
+            </div>
+
+            {/* CLOSE MOBILE */}
+            <button
+              className="md:hidden text-xl"
+              onClick={() => setOpen(false)}
+            >
+              ✕
+            </button>
           </div>
 
           {/* MENU */}
@@ -48,20 +73,34 @@ export default function AdminDashboard() {
           <button
             onClick={() => (window.location.href = "/")}
             className="mt-3 text-blue-200 hover:text-white text-sm"
-            >
+          >
             Déconnexion
-            </button>
+          </button>
         </div>
       </aside>
 
       {/* MAIN */}
-      <main className="flex-1 p-6 overflow-auto">
-        {/* HEADER */}
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-sm text-gray-700 font-medium">
-            Super Administration
-          </h2>
+      <main className="flex-1 p-4 md:p-6 overflow-auto w-full">
 
+        {/* HEADER */}
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-3 mb-6">
+
+          {/* LEFT */}
+          <div className="flex items-center gap-3">
+            {/* MENU BUTTON MOBILE */}
+            <button
+              className="md:hidden text-2xl"
+              onClick={() => setOpen(true)}
+            >
+              ☰
+            </button>
+
+            <h2 className="text-sm text-gray-700 font-medium">
+              Super Administration
+            </h2>
+          </div>
+
+          {/* RIGHT */}
           <div className="flex items-center gap-4">
             <span className="text-gray-600">🔔</span>
             <div className="bg-blue-700 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold">
@@ -79,7 +118,7 @@ export default function AdminDashboard() {
         </p>
 
         {/* CARDS */}
-        <div className="grid grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <StatCard title="Écoles" value="1" color="blue" />
           <StatCard title="Élèves" value="10" color="indigo" />
           <StatCard title="Enseignants" value="3" color="red" />
@@ -87,14 +126,14 @@ export default function AdminDashboard() {
         </div>
 
         {/* PRESENCE */}
-        <div className="bg-white border border-gray-200 rounded-xl p-4 mb-6 w-[300px] shadow-sm">
+        <div className="bg-white border border-gray-200 rounded-xl p-4 mb-6 w-full md:w-[300px] shadow-sm">
           <p className="text-sm text-gray-600">Taux de présence</p>
           <p className="text-2xl font-bold text-gray-900">92%</p>
         </div>
 
         {/* CHARTS */}
-        <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="col-span-2 bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+          <div className="lg:col-span-2 bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
             <p className="text-sm font-semibold text-gray-800 mb-4">
               Présences cette semaine
             </p>
@@ -120,20 +159,12 @@ export default function AdminDashboard() {
           </p>
 
           <div className="space-y-3">
-            <Annonce
-              title="Rentrée scolaire 2025-2026"
-              desc="Tous les élèves sont priés de se présenter..."
-            />
-            <Annonce
-              title="Réunion parents-professeurs"
-              desc="Une réunion aura lieu..."
-            />
-            <Annonce
-              title="Examens du premier trimestre"
-              desc="Les examens se dérouleront..."
-            />
+            <Annonce title="Rentrée scolaire 2025-2026" desc="Tous les élèves sont priés de se présenter..." />
+            <Annonce title="Réunion parents-professeurs" desc="Une réunion aura lieu..." />
+            <Annonce title="Examens du premier trimestre" desc="Les examens se dérouleront..." />
           </div>
         </div>
+
       </main>
     </div>
   );

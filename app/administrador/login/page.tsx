@@ -29,29 +29,34 @@ export default function LoginPage() {
       return;
     }
 
-    // 🔥 Redirecionamento por tipo
     switch (user.role) {
       case "ADMIN":
-        router.push("administrador/admin");
+        router.push("/administrador/admin");
         break;
       case "ECOLE":
-        router.push("administrador/ecole");
+        router.push("/administrador/ecole");
         break;
       case "PROF":
-        router.push("administrador/prof");
+        router.push("/administrador/prof");
         break;
       case "ELEVE":
-        router.push("administrador/eleve");
+        router.push("/administrador/eleve");
         break;
       case "PARENT":
-        router.push("administrador/parent");
+        router.push("/administrador/parent");
         break;
     }
   };
 
   return (
-    <div className="flex h-screen">
-      {/* LEFT SIDE */}
+    <div className="min-h-screen flex flex-col md:flex-row">
+
+      {/* TOP (mobile) / LEFT (desktop) */}
+      <div className="flex md:hidden bg-gradient-to-r from-[#0f172a] to-[#1e3a8a] text-white p-6 items-center justify-center">
+        <h1 className="text-xl font-bold">SYGECO</h1>
+      </div>
+
+      {/* LEFT SIDE (desktop only) */}
       <div className="hidden md:flex w-1/2 bg-gradient-to-br from-[#0f172a] to-[#1e3a8a] text-white flex-col items-center justify-center p-10">
         <div className="text-center max-w-md">
           <div className="mb-6">
@@ -65,7 +70,7 @@ export default function LoginPage() {
           </h1>
 
           <p className="text-lg font-medium mb-2 text-gray-200">
-          Système de Gestion Éducative et de Communication
+            Système de Gestion Éducative et de Communication
           </p>
 
           <p className="text-sm text-gray-300">
@@ -74,16 +79,16 @@ export default function LoginPage() {
           </p>
 
           <div className="mt-10 text-xs text-gray-400">
-            Développé par EDHA — Éducation et Développement d'Haïti
+            Développé par EDHA
           </div>
         </div>
       </div>
 
       {/* RIGHT SIDE */}
-      <div className="flex w-full md:w-1/2 items-center justify-center bg-gray-100 p-6">
-        <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl border border-gray-200">
-          
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+      <div className="flex flex-1 items-center justify-center bg-gray-100 p-4 sm:p-6">
+        <div className="w-full max-w-md bg-white p-6 sm:p-8 rounded-2xl shadow-xl border border-gray-200">
+
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
             Connexion
           </h2>
 
@@ -93,6 +98,7 @@ export default function LoginPage() {
 
           {/* FORM */}
           <form onSubmit={handleLogin} className="space-y-4">
+
             <div>
               <label className="text-sm font-medium text-gray-800">
                 Adresse email
@@ -102,7 +108,7 @@ export default function LoginPage() {
                 placeholder="votre@email.ht"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
+                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
               />
             </div>
 
@@ -114,12 +120,12 @@ export default function LoginPage() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
+                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
               />
             </div>
 
             <div className="text-right">
-              <a href="#" className="text-sm text-blue-600 hover:text-blue-800 hover:underline">
+              <a className="text-sm text-blue-600 hover:underline cursor-pointer">
                 Mot de passe oublié ?
               </a>
             </div>
@@ -132,7 +138,7 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* DEMO ACCOUNTS */}
+          {/* DEMO */}
           <div className="mt-6 p-4 bg-gray-100 rounded-lg text-xs text-gray-700">
             <p className="font-semibold mb-2 text-gray-900">
               Comptes de démonstration :
