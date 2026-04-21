@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import router from "next/router";
 
 export default function AnnoncesPage() {
   const pathname = usePathname();
@@ -83,7 +84,7 @@ export default function AnnoncesPage() {
           </div>
 
           <button
-            onClick={() => router.push("/login")}
+            onClick={() => (window.location.href = "/login")}
             className="mt-3 text-blue-200 hover:text-white text-sm"
             >
             Déconnexion
