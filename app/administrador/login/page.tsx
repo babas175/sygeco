@@ -32,19 +32,19 @@ export default function LoginPage() {
     // 🔥 Redirecionamento por tipo
     switch (user.role) {
       case "ADMIN":
-        router.push("/admin");
+        router.push("administrador/admin");
         break;
       case "ECOLE":
-        router.push("/ecole");
+        router.push("administrador/ecole");
         break;
       case "PROF":
-        router.push("/prof");
+        router.push("administrador/prof");
         break;
       case "ELEVE":
-        router.push("/eleve");
+        router.push("administrador/eleve");
         break;
       case "PARENT":
-        router.push("/parent");
+        router.push("administrador/parent");
         break;
     }
   };

@@ -1,5 +1,7 @@
-import { redirect } from "next/navigation";
+"use client";
+
+import LoginPage from "./administrador/login/page"; // ajuste o path
 
 export default function Home() {
-  redirect("/login");
+  return <LoginPage />;
 }

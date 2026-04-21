@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import router from "next/router";
 
 export default function AnnoncesPage() {
   const pathname = usePathname();
@@ -57,18 +56,17 @@ export default function AnnoncesPage() {
               Système de Gestion des Écoles
             </p>
           </div>
-
           <nav className="p-3 space-y-1 text-sm">
-            <MenuItem href="/admin" label="Tableau de bord" pathname={pathname} />
-            <MenuItem href="/ecole" label="Écoles" pathname={pathname} />
-            <MenuItem href="/eleves" label="Élèves" pathname={pathname} />
-            <MenuItem href="/enseignants" label="Enseignants" pathname={pathname} />
-            <MenuItem href="/presences" label="Présences" pathname={pathname} />
-            <MenuItem href="/notes" label="Notes" pathname={pathname} />
-            <MenuItem href="/emploi" label="Emploi du temps" pathname={pathname} />
-            <MenuItem href="/annonces" label="Annonces" pathname={pathname} />
-            <MenuItem href="/rapports" label="Rapports" pathname={pathname} />
-            <MenuItem href="/parametres" label="Paramètres" pathname={pathname} />
+            <MenuItem href="/administrador/admin" label="Tableau de bord" pathname={pathname} />
+            <MenuItem href="/administrador/ecole" label="Écoles" pathname={pathname} />
+            <MenuItem href="/administrador/eleves" label="Élèves" pathname={pathname} />
+            <MenuItem href="/administrador/enseignants" label="Enseignants" pathname={pathname} />
+            <MenuItem href="/administrador/presences" label="Présences" pathname={pathname} />
+            <MenuItem href="/administrador/notes" label="Notes" pathname={pathname} />
+            <MenuItem href="/administrador/emploi" label="Emploi du temps" pathname={pathname} />
+            <MenuItem href="/administrador/annonces" label="Annonces" pathname={pathname} />
+            <MenuItem href="/administrador/rapports" label="Rapports" pathname={pathname} />
+            <MenuItem href="/administrador/parametres" label="Paramètres" pathname={pathname} />
           </nav>
         </div>
 
@@ -84,7 +82,7 @@ export default function AnnoncesPage() {
           </div>
 
           <button
-            onClick={() => (window.location.href = "/login")}
+            onClick={() => (window.location.href = "/")}
             className="mt-3 text-blue-200 hover:text-white text-sm"
             >
             Déconnexion
