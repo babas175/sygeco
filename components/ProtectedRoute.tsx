@@ -4,18 +4,16 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getToken } from "@/lib/auth";
 
-export default function Home() {
+export default function ProtectedRoute({ children }: any) {
   const router = useRouter();
 
   useEffect(() => {
     const token = getToken();
 
-    if (token) {
-      router.push("/administrador/admin");
-    } else {
+    if (!token) {
       router.push("/login");
     }
   }, []);
 
-  return null;
+  return children;
 }

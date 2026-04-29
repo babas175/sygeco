@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { loginRequest } from "../../lib/api";
-
-const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
+import { setToken, setUser, getToken } from "@/lib/auth";
+import { loginRequest } from "@/lib/api";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -16,6 +15,13 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    const token = getToken();
+    if (token) {
+      router.push("/administrador/admin");
+    }
+  }, []);
+
   const handleLogin = async (e: any) => {
     e.preventDefault();
 
@@ -23,38 +29,21 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      // ⏳ efeito loading
-      await sleep(2000);
-
       const data = await loginRequest(email, password);
 
-      // 🔐 salvar token
-      localStorage.setItem("token", data.token);
+      setToken(data.token);
+      setUser(data.user);
 
       const role = data.user.role;
 
-      switch (role) {
-        case "ADMIN":
-          router.push("/administrador/admin");
-          break;
-        case "ECOLE":
-          router.push("/administrador/ecole");
-          break;
-        case "PROF":
-          router.push("/administrador/prof");
-          break;
-        case "ELEVE":
-          router.push("/administrador/eleve");
-          break;
-        case "PARENT":
-          router.push("/administrador/parent");
-          break;
-        default:
-          router.push("/");
+      if (role === "SUPERADMIN") {
+        router.push("/administrador/admin");
+      } else {
+        router.push("/dashboard");
       }
 
     } catch (err: any) {
-      setError("Email ou mot de passe incorrect");
+      setError(err?.message || "Email ou mot de passe incorrect");
     } finally {
       setLoading(false);
     }
@@ -63,15 +52,12 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
 
-      {/* MOBILE HEADER */}
       <div className="flex md:hidden bg-gradient-to-r from-[#0f172a] to-[#1e3a8a] text-white p-6 items-center justify-center">
         <h1 className="text-xl font-bold">SYGECO</h1>
       </div>
 
-      {/* LEFT SIDE */}
       <div className="hidden md:flex w-1/2 bg-gradient-to-br from-[#0f172a] to-[#1e3a8a] text-white flex-col items-center justify-center p-10">
         <div className="text-center max-w-md">
-
           <div className="mb-6">
             <div className="w-16 h-16 bg-white/20 rounded-full mx-auto flex items-center justify-center text-xl">
               🎓
@@ -87,18 +73,11 @@ export default function LoginPage() {
           </p>
 
           <p className="text-sm text-gray-300">
-            La plateforme numérique pour moderniser la gestion scolaire en Haïti.
-            Administration, pédagogie et communication en un seul endroit.
+            Plateforme moderne pour la gestion scolaire.
           </p>
-
-          <div className="mt-10 text-xs text-gray-400">
-            Développé par EDHA
-          </div>
-
         </div>
       </div>
 
-      {/* RIGHT SIDE */}
       <div className="flex flex-1 items-center justify-center bg-gray-100 p-4 sm:p-6">
         <div className="w-full max-w-md bg-white p-6 sm:p-8 rounded-2xl shadow-xl border border-gray-200">
 
@@ -107,22 +86,21 @@ export default function LoginPage() {
           </h2>
 
           <p className="text-sm text-gray-600 mb-6">
-            Entrez vos identifiants pour accéder à votre espace
+            Entrez vos identifiants
           </p>
 
           <form onSubmit={handleLogin} className="space-y-4">
 
-            {/* EMAIL */}
             <div>
               <label className="text-sm font-medium text-gray-800">
-                Adresse email
+                Email
               </label>
               <input
                 type="email"
-                placeholder="votre@email.ht"
+                placeholder="email@exemple.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={`w-full mt-1 px-3 py-2 border rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 ${
+                className={`w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
                   error
                     ? "border-red-400 focus:ring-red-400"
                     : "border-gray-300 focus:ring-blue-600"
@@ -130,7 +108,6 @@ export default function LoginPage() {
               />
             </div>
 
-            {/* PASSWORD */}
             <div>
               <label className="text-sm font-medium text-gray-800">
                 Mot de passe
@@ -139,7 +116,7 @@ export default function LoginPage() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className={`w-full mt-1 px-3 py-2 border rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 ${
+                className={`w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
                   error
                     ? "border-red-400 focus:ring-red-400"
                     : "border-gray-300 focus:ring-blue-600"
@@ -147,20 +124,12 @@ export default function LoginPage() {
               />
             </div>
 
-            {/* ERROR */}
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-600 text-sm px-4 py-2 rounded-lg text-center">
                 {error}
               </div>
             )}
 
-            <div className="text-right">
-              <a className="text-sm text-blue-600 hover:underline cursor-pointer">
-                Mot de passe oublié ?
-              </a>
-            </div>
-
-            {/* BUTTON */}
             <button
               type="submit"
               disabled={loading}
@@ -173,10 +142,6 @@ export default function LoginPage() {
             </button>
 
           </form>
-
-          <p className="text-center text-xs text-gray-500 mt-6">
-            Powered by EDHA
-          </p>
 
         </div>
       </div>
