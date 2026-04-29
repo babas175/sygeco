@@ -2,6 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { loginRequest } from "../../lib/api";
+
+// ⏳ delay helper
+const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 export default function LoginPage() {
   const router = useRouter();
@@ -9,56 +13,65 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const users = [
-    { email: "admin@sygeco.ht", password: "admin123", role: "ADMIN" },
-    { email: "direction@college...", password: "admin123", role: "ECOLE" },
-    { email: "prof@college...", password: "prof123", role: "PROF" },
-    { email: "eleve@...", password: "eleve123", role: "ELEVE" },
-    { email: "parent@...", password: "parent123", role: "PARENT" },
-  ];
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e: any) => {
+  const handleLogin = async (e: any) => {
     e.preventDefault();
 
-    const user = users.find(
-      (u) => u.email === email && u.password === password
-    );
+    setError("");
+    setLoading(true);
 
-    if (!user) {
-      alert("Identifiants invalides");
-      return;
-    }
+    try {
+      // ⏳ efeito loading
+      await sleep(2000);
 
-    switch (user.role) {
-      case "ADMIN":
-        router.push("/administrador/admin");
-        break;
-      case "ECOLE":
-        router.push("/administrador/ecole");
-        break;
-      case "PROF":
-        router.push("/administrador/prof");
-        break;
-      case "ELEVE":
-        router.push("/administrador/eleve");
-        break;
-      case "PARENT":
-        router.push("/administrador/parent");
-        break;
+      const data = await loginRequest(email, password);
+
+      // 🔐 salvar token
+      localStorage.setItem("token", data.token);
+
+      const role = data.user.role;
+
+      switch (role) {
+        case "ADMIN":
+          router.push("/administrador/admin");
+          break;
+        case "ECOLE":
+          router.push("/administrador/ecole");
+          break;
+        case "PROF":
+          router.push("/administrador/prof");
+          break;
+        case "ELEVE":
+          router.push("/administrador/eleve");
+          break;
+        case "PARENT":
+          router.push("/administrador/parent");
+          break;
+        default:
+          router.push("/");
+      }
+
+    } catch (err: any) {
+      setError("Email ou mot de passe incorrect");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
 
-      {/* TOP (mobile) / LEFT (desktop) */}
+      {/* MOBILE HEADER */}
       <div className="flex md:hidden bg-gradient-to-r from-[#0f172a] to-[#1e3a8a] text-white p-6 items-center justify-center">
         <h1 className="text-xl font-bold">SYGECO</h1>
       </div>
 
-      {/* LEFT SIDE (desktop only) */}
+      {/* LEFT SIDE */}
       <div className="hidden md:flex w-1/2 bg-gradient-to-br from-[#0f172a] to-[#1e3a8a] text-white flex-col items-center justify-center p-10">
         <div className="text-center max-w-md">
+
           <div className="mb-6">
             <div className="w-16 h-16 bg-white/20 rounded-full mx-auto flex items-center justify-center text-xl">
               🎓
@@ -81,6 +94,7 @@ export default function LoginPage() {
           <div className="mt-10 text-xs text-gray-400">
             Développé par EDHA
           </div>
+
         </div>
       </div>
 
@@ -96,9 +110,9 @@ export default function LoginPage() {
             Entrez vos identifiants pour accéder à votre espace
           </p>
 
-          {/* FORM */}
           <form onSubmit={handleLogin} className="space-y-4">
 
+            {/* EMAIL */}
             <div>
               <label className="text-sm font-medium text-gray-800">
                 Adresse email
@@ -108,10 +122,15 @@ export default function LoginPage() {
                 placeholder="votre@email.ht"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                className={`w-full mt-1 px-3 py-2 border rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 ${
+                  error
+                    ? "border-red-400 focus:ring-red-400"
+                    : "border-gray-300 focus:ring-blue-600"
+                }`}
               />
             </div>
 
+            {/* PASSWORD */}
             <div>
               <label className="text-sm font-medium text-gray-800">
                 Mot de passe
@@ -120,9 +139,20 @@ export default function LoginPage() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                className={`w-full mt-1 px-3 py-2 border rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 ${
+                  error
+                    ? "border-red-400 focus:ring-red-400"
+                    : "border-gray-300 focus:ring-blue-600"
+                }`}
               />
             </div>
+
+            {/* ERROR */}
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-600 text-sm px-4 py-2 rounded-lg text-center">
+                {error}
+              </div>
+            )}
 
             <div className="text-right">
               <a className="text-sm text-blue-600 hover:underline cursor-pointer">
@@ -130,29 +160,24 @@ export default function LoginPage() {
               </a>
             </div>
 
+            {/* BUTTON */}
             <button
               type="submit"
-              className="w-full bg-blue-700 text-white py-2.5 rounded-lg hover:bg-blue-800 transition font-medium shadow-md"
+              disabled={loading}
+              className="w-full bg-blue-700 text-white py-2.5 rounded-lg hover:bg-blue-800 transition font-medium shadow-md disabled:opacity-60 flex items-center justify-center gap-2"
             >
-              Se connecter
+              {loading && (
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              )}
+              {loading ? "Connexion..." : "Se connecter"}
             </button>
-          </form>
 
-          {/* DEMO */}
-          <div className="mt-6 p-4 bg-gray-100 rounded-lg text-xs text-gray-700">
-            <p className="font-semibold mb-2 text-gray-900">
-              Comptes de démonstration :
-            </p>
-            <p>Admin: admin@sygeco.ht / admin123</p>
-            <p>École: direction@college... / admin123</p>
-            <p>Prof: prof@college... / prof123</p>
-            <p>Élève: eleve@... / eleve123</p>
-            <p>Parent: parent@... / parent123</p>
-          </div>
+          </form>
 
           <p className="text-center text-xs text-gray-500 mt-6">
             Powered by EDHA
           </p>
+
         </div>
       </div>
     </div>
