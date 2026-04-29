@@ -11,7 +11,7 @@ export default function Home() {
     const token = getToken();
 
     if (token) {
-      router.push("/administrador/admin");
+      router.push("/dashboard");
     } else {
       router.push("/login");
     }

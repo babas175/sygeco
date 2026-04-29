@@ -18,7 +18,7 @@ export default function LoginPage() {
   useEffect(() => {
     const token = getToken();
     if (token) {
-      router.push("/administrador/admin");
+      router.push("/dashboard");
     }
   }, []);
 
@@ -34,13 +34,7 @@ export default function LoginPage() {
       setToken(data.token);
       setUser(data.user);
 
-      const role = data.user.role;
-
-      if (role === "SUPERADMIN") {
-        router.push("/administrador/admin");
-      } else {
-        router.push("/dashboard");
-      }
+      router.push("/dashboard");
 
     } catch (err: any) {
       setError(err?.message || "Email ou mot de passe incorrect");

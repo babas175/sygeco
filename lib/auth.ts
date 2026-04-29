@@ -1,36 +1,80 @@
-export function getToken() {
+export type User = {
+  id: string;
+  email: string;
+  role: "SUPERADMIN" | "ADMIN" | "PROF" | "ELEVE";
+  ecole_id?: string | null;
+};
+
+const TOKEN_KEY = "token";
+const USER_KEY = "user";
+
+/* TOKEN */
+export function getToken(): string | null {
   if (typeof globalThis === "undefined") return null;
-  return localStorage.getItem("token");
+  return globalThis.localStorage?.getItem(TOKEN_KEY) ?? null;
 }
 
 export function setToken(token: string) {
   if (typeof globalThis === "undefined") return;
-  localStorage.setItem("token", token);
+  globalThis.localStorage?.setItem(TOKEN_KEY, token);
 }
 
 export function removeToken() {
   if (typeof globalThis === "undefined") return;
-  localStorage.removeItem("token");
+  globalThis.localStorage?.removeItem(TOKEN_KEY);
 }
 
-export function getUser() {
+/* USER */
+export function getUser(): User | null {
   if (typeof globalThis === "undefined") return null;
 
-  const user = localStorage.getItem("user");
-  return user ? JSON.parse(user) : null;
+  const user = globalThis.localStorage?.getItem(USER_KEY);
+  if (!user) return null;
+
+  try {
+    return JSON.parse(user) as User;
+  } catch {
+    return null;
+  }
 }
 
-export function setUser(user: any) {
+export function setUser(user: User) {
   if (typeof globalThis === "undefined") return;
-  localStorage.setItem("user", JSON.stringify(user));
+  globalThis.localStorage?.setItem(USER_KEY, JSON.stringify(user));
+}
+
+export function removeUser() {
+  if (typeof globalThis === "undefined") return;
+  globalThis.localStorage?.removeItem(USER_KEY);
+}
+
+/* AUTH */
+export function isAuthenticated(): boolean {
+  return !!getToken();
+}
+
+/* ROLE HELPERS */
+export function isSuperAdmin() {
+  return getUser()?.role === "SUPERADMIN";
+}
+
+export function isAdmin() {
+  return getUser()?.role === "ADMIN";
+}
+
+export function isProf() {
+  return getUser()?.role === "PROF";
+}
+
+export function isEleve() {
+  return getUser()?.role === "ELEVE";
 }
 
 export function logout() {
   removeToken();
-  localStorage.removeItem("user");
-  globalThis.location.href = "/login";
-}
+  removeUser();
 
-export function isAuthenticated() {
-  return !!getToken();
+  if (typeof globalThis !== "undefined") {
+    globalThis.location.href = "/login";
+  }
 }
