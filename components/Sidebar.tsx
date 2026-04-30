@@ -31,99 +31,105 @@ export default function Sidebar() {
 
   return (
     <aside className="w-64 bg-[#0b3aa5] text-white flex flex-col justify-between">
-
-      {/* TOP */}
       <div>
-        <div className="p-4 border-b border-white/10 flex items-center gap-2">
-          <img src="/logo.svg" className="w-6 h-6" />
-          <h1 className="font-bold text-lg">SYGECO</h1>
+        <div className="p-5 border-b border-white/10 flex items-center gap-4">
+          <div className="bg-white/10 p-2 rounded-xl">
+            <img
+              src="/logo.svg"
+              alt="SYGECO logo"
+              className="w-10 h-10 object-contain"
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <h1 className="text-white font-bold text-lg tracking-wide">
+              SYGECO
+            </h1>
+            <span className="text-xs text-blue-200 leading-tight">
+              Système de Gestion des Écoles
+            </span>
+          </div>
         </div>
 
         <nav className="p-3 space-y-1 text-sm">
-
-          {/* DASHBOARD (TODOS) */}
           <Link href="/dashboard" className={linkClass("/dashboard")}>
-            <LayoutDashboard size={16} /> Dashboard
+            <LayoutDashboard size={16} /> Tableau de bord
           </Link>
 
-          {/* SUPERADMIN */}
           {user?.role === "SUPERADMIN" && (
             <>
               <Link href="/schools" className={linkClass("/schools")}>
-                <School size={16} /> Schools
+                <School size={16} /> Écoles
               </Link>
 
               <Link href="/reports" className={linkClass("/reports")}>
-                <BarChart3 size={16} /> Reports
+                <BarChart3 size={16} /> Rapports
               </Link>
 
               <Link href="/settings" className={linkClass("/settings")}>
-                <Settings size={16} /> Settings
+                <Settings size={16} /> Paramètres
               </Link>
             </>
           )}
 
-          {/* ADMIN */}
           {user?.role === "ADMIN" && (
             <>
               <Link href="/students" className={linkClass("/students")}>
-                <Users size={16} /> Students
+                <Users size={16} /> Élèves
               </Link>
 
               <Link href="/teachers" className={linkClass("/teachers")}>
-                <GraduationCap size={16} /> Teachers
+                <GraduationCap size={16} /> Enseignants
               </Link>
 
               <Link href="/attendance" className={linkClass("/attendance")}>
-                <ClipboardCheck size={16} /> Attendance
+                <ClipboardCheck size={16} /> Présences
               </Link>
 
               <Link href="/grades" className={linkClass("/grades")}>
-                <BookOpen size={16} /> Grades
+                <BookOpen size={16} /> Notes
               </Link>
 
               <Link href="/schedule" className={linkClass("/schedule")}>
-                <Calendar size={16} /> Schedule
+                <Calendar size={16} /> Emploi du temps
               </Link>
 
               <Link href="/announcements" className={linkClass("/announcements")}>
-                <Megaphone size={16} /> Announcements
+                <Megaphone size={16} /> Annonces
               </Link>
 
               <Link href="/reports" className={linkClass("/reports")}>
-                <BarChart3 size={16} /> Reports
+                <BarChart3 size={16} /> Rapports
               </Link>
 
               <Link href="/settings" className={linkClass("/settings")}>
-                <Settings size={16} /> Settings
+                <Settings size={16} /> Paramètres
               </Link>
             </>
           )}
 
-          {/* PROF */}
           {user?.role === "PROF" && (
             <>
               <Link href="/grades" className={linkClass("/grades")}>
-                <BookOpen size={16} /> Grades
+                <BookOpen size={16} /> Notes
               </Link>
 
               <Link href="/schedule" className={linkClass("/schedule")}>
-                <Calendar size={16} /> Schedule
+                <Calendar size={16} /> Emploi du temps
               </Link>
             </>
           )}
 
-          {/* ELEVE */}
           {user?.role === "ELEVE" && (
             <>
               <Link href="/grades" className={linkClass("/grades")}>
-                <BookOpen size={16} /> My Grades
+                <BookOpen size={16} /> Mes notes
               </Link>
             </>
           )}
-
         </nav>
       </div>
+
       <div className="p-4 border-t border-white/10">
         <button
           onClick={logout}
@@ -134,7 +140,6 @@ export default function Sidebar() {
           Déconnexion
         </button>
       </div>
-
     </aside>
   );
 }
