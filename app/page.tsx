@@ -1,7 +1,21 @@
 "use client";
 
-import LoginPage from "./administrador/login/page"; // ajuste o path
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { getToken } from "@/lib/auth";
 
 export default function Home() {
-  return <LoginPage />;
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = getToken();
+
+    if (token) {
+      router.push("/dashboard");
+    } else {
+      router.push("/login");
+    }
+  }, []);
+
+  return null;
 }
