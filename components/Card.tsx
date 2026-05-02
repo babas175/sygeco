@@ -1,17 +1,32 @@
-import React from "react";
+import type { ReactNode } from "react";
 
 interface CardProps {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   clickable?: boolean;
+  padding?: "none" | "sm" | "md" | "lg";
 }
 
-export default function Card({ children, className = "", clickable = false }: Readonly<CardProps>) {
+const paddings = {
+  none: "",
+  sm: "p-4",
+  md: "p-5",
+  lg: "p-6",
+};
+
+export default function Card({
+  children,
+  className = "",
+  clickable = false,
+  padding = "md",
+}: Readonly<CardProps>) {
   return (
     <div
-      className={`bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 ${
-        clickable ? "cursor-pointer hover:border-blue-300" : ""
-      } ${className}`}
+      className={`rounded-2xl border border-slate-200/80 bg-white shadow-[var(--card-shadow)] ring-1 ring-slate-950/[0.02] transition ${
+        clickable
+          ? "cursor-pointer hover:border-indigo-200/80 hover:shadow-md"
+          : ""
+      } ${paddings[padding]} ${className}`}
     >
       {children}
     </div>

@@ -9,9 +9,10 @@ import {
   BarChart,
   Bar,
 } from "recharts";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { MetricCard } from "@/components/ui/MetricCard";
 
 export default function ReportsPage() {
-
   const evolutionData = [
     { name: "Sep", value: 8 },
     { name: "Oct", value: 9 },
@@ -27,87 +28,70 @@ export default function ReportsPage() {
   ];
 
   return (
-    <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
+    <div className="space-y-8">
+      <PageHeader
+        title="Rapports et analyses"
+        description="Vue d’ensemble des statistiques et tendances."
+      />
 
-      {/* HEADER */}
-      <div>
-        <h1 className="text-2xl font-semibold text-gray-900">
-          Rapports et Analyses
-        </h1>
-        <p className="text-sm text-gray-500">
-          Vue d'ensemble des statistiques scolaires
-        </p>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <MetricCard title="Total élèves" value="10" variant="primary" />
+        <MetricCard title="Enseignants" value="3" variant="warning" />
+        <MetricCard title="Taux de présence" value="92%" variant="success" />
+        <MetricCard title="Moyenne générale" value="14,8/20" variant="neutral" />
       </div>
 
-      {/* STATS */}
-      <div className="grid grid-cols-4 gap-4">
-        <StatCard title="Total élèves" value="10" color="blue" />
-        <StatCard title="Enseignants" value="3" color="red" />
-        <StatCard title="Taux de présence" value="92%" color="green" />
-        <StatCard title="Moyenne générale" value="14.8/20" color="yellow" />
-      </div>
-
-      {/* CHARTS */}
-      <div className="grid grid-cols-2 gap-4">
-
-        {/* LINE */}
-        <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
-          <p className="font-medium mb-3 text-gray-900">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-[var(--card-shadow)] ring-1 ring-slate-950/[0.02]">
+          <p className="mb-4 text-sm font-semibold text-slate-900">
             Évolution des inscriptions
           </p>
 
-          <div className="h-48">
+          <div className="h-52">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={evolutionData}>
-                <XAxis dataKey="name" />
-                <Tooltip />
+                <XAxis dataKey="name" stroke="#94a3b8" tick={{ fontSize: 12 }} />
+                <Tooltip
+                  contentStyle={{
+                    borderRadius: 12,
+                    border: "1px solid rgb(226 232 240)",
+                    boxShadow: "0 10px 15px -3px rgb(15 23 42 / 0.08)",
+                  }}
+                />
                 <Line
                   type="monotone"
                   dataKey="value"
-                  stroke="#1d4ed8"
-                  strokeWidth={2}
+                  stroke="#4f46e5"
+                  strokeWidth={2.5}
+                  dot={{ fill: "#4f46e5", strokeWidth: 0, r: 4 }}
                 />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* BAR */}
-        <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
-          <p className="font-medium mb-3 text-gray-900">
+        <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-[var(--card-shadow)] ring-1 ring-slate-950/[0.02]">
+          <p className="mb-4 text-sm font-semibold text-slate-900">
             Performance par matière
           </p>
 
-          <div className="h-48">
+          <div className="h-52">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={performanceData}>
-                <XAxis dataKey="name" />
-                <Tooltip />
-                <Bar dataKey="value" fill="#dc2626" radius={[4, 4, 0, 0]} />
+                <XAxis dataKey="name" stroke="#94a3b8" tick={{ fontSize: 12 }} />
+                <Tooltip
+                  contentStyle={{
+                    borderRadius: 12,
+                    border: "1px solid rgb(226 232 240)",
+                    boxShadow: "0 10px 15px -3px rgb(15 23 42 / 0.08)",
+                  }}
+                />
+                <Bar dataKey="value" fill="#6366f1" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
-
       </div>
-
-    </div>
-  );
-}
-
-/* STAT CARD */
-function StatCard({ title, value, color }: any) {
-  const colors: any = {
-    blue: "border-blue-200 bg-blue-50 text-blue-700",
-    red: "border-red-200 bg-red-50 text-red-700",
-    green: "border-green-200 bg-green-50 text-green-700",
-    yellow: "border-yellow-200 bg-yellow-50 text-yellow-700",
-  };
-
-  return (
-    <div className={`p-4 rounded-xl border shadow-sm ${colors[color]}`}>
-      <p className="text-sm">{title}</p>
-      <p className="text-lg font-semibold">{value}</p>
     </div>
   );
 }

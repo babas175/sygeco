@@ -1,7 +1,9 @@
 "use client";
 
-export default function SchedulePage() {
+import { Clock } from "lucide-react";
+import { PageHeader } from "@/components/ui/PageHeader";
 
+export default function SchedulePage() {
   const schedule = {
     Lundi: [
       {
@@ -48,66 +50,52 @@ export default function SchedulePage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      <PageHeader
+        title="Emploi du temps"
+        description="Planning hebdomadaire des cours."
+      />
 
-      {/* HEADER */}
       <div>
-        <h1 className="text-xl font-semibold">
-          Emploi du temps
-        </h1>
-        <p className="text-sm text-gray-500">
-          Planning hebdomadaire des cours
-        </p>
-      </div>
-
-      {/* FILTER */}
-      <div>
-        <select className="border border-gray-200 rounded-lg px-3 py-2 bg-white text-sm cursor-pointer">
+        <select className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-800 shadow-sm outline-none transition focus:border-indigo-300 focus:ring-2 focus:ring-indigo-500/20">
           <option>6ème A</option>
           <option>5ème A</option>
           <option>4ème A</option>
         </select>
       </div>
 
-      {/* GRID */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
         {Object.entries(schedule).map(([day, courses]) => (
           <div
             key={day}
-            className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden"
+            className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-[var(--card-shadow)] ring-1 ring-slate-950/[0.02]"
           >
-            <div className="bg-[#132f7a] text-white px-4 py-2 text-sm font-semibold">
+            <div className="bg-linear-to-r from-indigo-600 to-violet-600 px-4 py-3 text-sm font-semibold text-white">
               {day}
             </div>
 
-            <div className="p-3 space-y-3">
+            <div className="space-y-3 p-4">
               {courses.map((course, index) => (
                 <div
                   key={index}
-                  className="border border-gray-200 rounded-lg p-3 bg-gray-50"
+                  className="rounded-xl border border-slate-100 bg-slate-50/80 p-4 transition hover:border-indigo-100 hover:bg-white"
                 >
-                  <p className="text-xs text-gray-500 mb-1">
-                    🕒 {course.time}
+                  <p className="mb-2 flex items-center gap-1.5 text-xs font-medium text-slate-500">
+                    <Clock size={14} strokeWidth={2} className="text-indigo-500" aria-hidden />
+                    {course.time}
                   </p>
 
-                  <p className="font-medium text-sm">
-                    {course.subject}
-                  </p>
+                  <p className="font-semibold text-slate-900">{course.subject}</p>
 
-                  <p className="text-xs text-gray-500">
-                    {course.teacher}
-                  </p>
+                  <p className="mt-1 text-xs text-slate-600">{course.teacher}</p>
 
-                  <p className="text-xs text-gray-400">
-                    {course.room}
-                  </p>
+                  <p className="mt-2 text-xs font-medium text-slate-400">{course.room}</p>
                 </div>
               ))}
             </div>
           </div>
         ))}
       </div>
-
     </div>
   );
 }

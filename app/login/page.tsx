@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { setToken, setUser, getToken } from "@/lib/auth";
 import { loginRequest } from "@/lib/api";
-import { ArrowRight, Zap } from "lucide-react";
+import { ArrowRight, Shield } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -21,7 +21,7 @@ export default function LoginPage() {
     if (token) {
       router.push("/dashboard");
     }
-  }, []);
+  }, [router]);
 
   const handleLogin = async (e: any) => {
     e.preventDefault();
@@ -36,7 +36,6 @@ export default function LoginPage() {
       setUser(data.user);
 
       router.push("/dashboard");
-
     } catch (err: any) {
       setError(err?.message || "Email ou mot de passe incorrect");
     } finally {
@@ -45,103 +44,84 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
-      
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-600/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-600/20 rounded-full blur-3xl animate-pulse animation-delay-2000"></div>
-        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-slate-600/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
-      </div>
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950">
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(1000px_circle_at_20%_10%,rgba(99,102,241,0.35),transparent_50%),radial-gradient(800px_circle_at_80%_60%,rgba(139,92,246,0.2),transparent_50%)]"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.15]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
+        }}
+        aria-hidden
+      />
 
-      {/* Grid pattern overlay */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="h-full w-full" style={{
-          backgroundImage: 'linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px)',
-          backgroundSize: '50px 50px'
-        }}></div>
-      </div>
-
-      {/* Main Content */}
       <div className="relative z-10 w-full max-w-md px-4 sm:px-6">
-        
-        {/* HEADER - Logo & Title */}
-        <div className="text-center mb-10 fade-in">
-          {/* Logo Badge */}
-          <div className="inline-flex items-center justify-center mb-6 group">
+        <div className="mb-10 text-center">
+          <div className="mb-6 inline-flex">
             <div className="relative">
-              <div className="absolute inset-0 bg-linear-to-br from-purple-600 to-indigo-600 rounded-2xl blur-2xl opacity-60 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="relative w-16 h-16 bg-linear-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-2xl border border-purple-400/30">
-                <span className="text-4xl font-black text-white">S</span>
+              <div className="absolute inset-0 rounded-2xl bg-indigo-500/40 blur-2xl" />
+              <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-indigo-500 to-violet-600 text-2xl font-bold text-white shadow-2xl ring-1 ring-white/20">
+                S
               </div>
             </div>
           </div>
-          
-          {/* Titles */}
-          <h1 className="text-5xl font-black text-white mb-3 tracking-tight leading-tight">
-            SYGECO
-          </h1>
-          
-          <div className="flex items-center justify-center gap-2 mb-3">
-            <div className="w-1 h-1 bg-purple-400 rounded-full"></div>
-            <p className="text-purple-300 text-base font-semibold">Plataforma Educacional Premium</p>
-            <div className="w-1 h-1 bg-purple-400 rounded-full"></div>
-          </div>
-          
-          <p className="text-slate-300 text-sm leading-relaxed">
-            Gestão completa de escolas com tecnologia de ponta
+
+          <h1 className="mb-2 text-4xl font-bold tracking-tight text-white">SYGECO</h1>
+          <p className="text-sm font-medium text-slate-400">
+            Espace de gestion scolaire
+          </p>
+          <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-slate-500">
+            Tableaux de bord, présences, notes et communication — un seul outil.
           </p>
         </div>
 
-        {/* LOGIN FORM CARD */}
-        <div className="relative group mb-8">
-          {/* Card border glow */}
-          <div className="absolute inset-0 bg-linear-to-br from-purple-500/30 to-indigo-500/30 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-          
-          {/* Card */}
-          <div className="relative bg-white/10 backdrop-blur-2xl rounded-3xl shadow-2xl p-8 sm:p-10 border border-white/20 hover:border-purple-400/50 transition-colors duration-300">
-            
-            {/* Card header */}
+        <div className="relative">
+          <div className="absolute -inset-0.5 rounded-3xl bg-linear-to-r from-indigo-500/50 to-violet-500/40 opacity-50 blur" />
+          <div className="relative rounded-3xl border border-white/10 bg-slate-900/80 p-8 shadow-2xl backdrop-blur-xl sm:p-10">
             <div className="mb-8">
-              <div className="flex items-center gap-3 mb-2">
-                <Zap size={24} className="text-purple-400" />
-                <h2 className="text-2xl font-bold text-white">
-                  Conectar
-                </h2>
+              <div className="mb-2 flex items-center gap-2.5">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-500/20 text-indigo-300">
+                  <Shield size={20} strokeWidth={2} />
+                </div>
+                <h2 className="text-xl font-semibold text-white">Connexion</h2>
               </div>
-              <p className="text-slate-300 text-sm ml-9">
-                Acesse sua conta para continuar
+              <p className="ml-12 text-sm text-slate-400">
+                Saisissez vos identifiants pour accéder à l’espace sécurisé.
               </p>
             </div>
 
-            {/* Form */}
             <form onSubmit={handleLogin} className="space-y-5">
-
-              {/* EMAIL INPUT */}
-              <div className="relative group/input">
-                <label htmlFor="email" className="block text-sm font-semibold text-white mb-2.5 flex items-center gap-2">
-                  <span className="w-1 h-1 bg-purple-400 rounded-full"></span>
+              <div>
+                <label
+                  htmlFor="email"
+                  className="mb-2 block text-sm font-medium text-slate-200"
+                >
                   Email
                 </label>
                 <input
                   id="email"
                   type="email"
-                  placeholder="seu.email@escola.com"
+                  placeholder="prenom.nom@etablissement.fr"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className={`w-full px-4 py-3.5 border-2 rounded-xl focus:outline-none transition-all duration-300 ${
+                  className={
                     error
-                      ? "border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-200 bg-red-500/10 text-white placeholder-red-300/50"
-                      : "border-slate-500/50 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 bg-white/10 text-white placeholder-slate-400 hover:border-purple-500/70 group-hover/input:border-purple-500/70"
-                  }`}
+                      ? "w-full rounded-xl border-2 border-red-400/80 bg-red-500/10 px-4 py-3 text-sm text-white placeholder:text-red-200/60 focus:border-red-400 focus:ring-2 focus:ring-red-500/30"
+                      : "w-full rounded-xl border border-slate-600/80 bg-slate-950/50 px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/25"
+                  }
                 />
               </div>
 
-              {/* PASSWORD INPUT */}
-              <div className="relative group/input">
-                <label htmlFor="password" className="block text-sm font-semibold text-white mb-2.5 flex items-center gap-2">
-                  <span className="w-1 h-1 bg-purple-400 rounded-full"></span>
-                  Senha
+              <div>
+                <label
+                  htmlFor="password"
+                  className="mb-2 block text-sm font-medium text-slate-200"
+                >
+                  Mot de passe
                 </label>
                 <input
                   id="password"
@@ -149,66 +129,55 @@ export default function LoginPage() {
                   placeholder="••••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full px-4 py-3.5 border-2 rounded-xl focus:outline-none transition-all duration-300 ${
+                  className={
                     error
-                      ? "border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-200 bg-red-500/10 text-white placeholder-red-300/50"
-                      : "border-slate-500/50 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 bg-white/10 text-white placeholder-slate-400 hover:border-purple-500/70 group-hover/input:border-purple-500/70"
-                  }`}
+                      ? "w-full rounded-xl border-2 border-red-400/80 bg-red-500/10 px-4 py-3 text-sm text-white placeholder:text-red-200/60 focus:border-red-400 focus:ring-2 focus:ring-red-500/30"
+                      : "w-full rounded-xl border border-slate-600/80 bg-slate-950/50 px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/25"
+                  }
                 />
               </div>
 
-              {/* ERROR MESSAGE */}
               {error && (
-                <div className="bg-red-500/20 border-2 border-red-400/50 text-red-200 text-sm px-5 py-4 rounded-xl font-medium flex items-center gap-2 animate-pulse">
-                  <span className="text-lg">⚠️</span> {error}
+                <div className="rounded-xl border border-red-400/40 bg-red-500/15 px-4 py-3 text-sm text-red-100">
+                  {error}
                 </div>
               )}
 
-              {/* SUBMIT BUTTON */}
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white py-3.5 rounded-xl transition-all duration-300 font-bold shadow-lg hover:shadow-xl hover:shadow-purple-500/30 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-base group relative overflow-hidden mt-6"
+                className="group relative mt-2 flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-linear-to-r from-indigo-600 to-violet-600 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-900/40 transition hover:from-indigo-500 hover:to-violet-500 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {/* Button background shine effect */}
-                <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-                
                 <span className="relative flex items-center gap-2">
                   {loading ? (
                     <>
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      Conectando...
+                      <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      Connexion…
                     </>
                   ) : (
                     <>
-                      Entrar na Plataforma
-                      <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-300" />
+                      Entrer
+                      <ArrowRight
+                        size={18}
+                        className="transition group-hover:translate-x-0.5"
+                        strokeWidth={2}
+                      />
                     </>
                   )}
                 </span>
               </button>
-
             </form>
 
-            {/* Card divider */}
-            <div className="mt-8 pt-8 border-t border-white/10">
-              <p className="text-center text-xs text-slate-400">
-                <span className="text-purple-300 font-semibold">SYGECO</span> • Sistema seguro de gestão educacional
-              </p>
-            </div>
-
+            <p className="mt-8 border-t border-white/10 pt-6 text-center text-xs text-slate-500">
+              SYGECO · Données traitées de façon sécurisée
+            </p>
           </div>
         </div>
 
-        {/* BOTTOM - Copyright */}
-        <div className="text-center">
-          <p className="text-slate-400 text-xs">
-            © 2026 SYGECO. Todos os direitos reservados. | v1.0
-          </p>
-        </div>
-
+        <p className="mt-8 text-center text-xs text-slate-600">
+          © {new Date().getFullYear()} SYGECO
+        </p>
       </div>
-
     </div>
   );
 }

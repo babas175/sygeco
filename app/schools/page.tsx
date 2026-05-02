@@ -2,6 +2,9 @@
 
 import { API_URL } from "@/lib/api";
 import { useEffect, useMemo, useState } from "react";
+import { MetricCard } from "@/components/ui/MetricCard";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Button } from "@/components/ui/Button";
 
 type School = {
   id: string;
@@ -264,67 +267,69 @@ export default function SchoolsPage() {
   const inactiveSchools = schools.filter((s) => s.is_active === false).length;
 
   return (
-    <div className="min-h-screen bg-[#f6f8fb] text-gray-900">
+    <>
       {notification && (
         <div
-          className={`fixed right-5 top-5 z-[80] rounded-2xl px-5 py-4 shadow-xl border text-sm ${
+          className={`fixed right-5 top-5 z-[80] rounded-2xl border px-5 py-4 text-sm shadow-xl ${
             notification.type === "success"
-              ? "bg-emerald-50 border-emerald-200 text-emerald-700"
-              : "bg-red-50 border-red-200 text-red-700"
+              ? "border-emerald-200 bg-emerald-50 text-emerald-800"
+              : "border-red-200 bg-red-50 text-red-800"
           }`}
         >
           {notification.message}
         </div>
       )}
 
-      <main className="p-4 md:p-8 space-y-6">
-        <section className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 text-blue-700 px-3 py-1 text-xs font-medium mb-3">
-              Superadministração
-            </div>
+      <div className="space-y-8 text-slate-900">
+        <PageHeader
+          badge="Superadministração"
+          title="Gestion des écoles"
+          description="Créer, modifier, consulter, désactiver et réactiver les établissements."
+          actions={
+            <Button variant="primary" size="md" type="button" onClick={openCreateModal}>
+              Nouvelle école
+            </Button>
+          }
+        />
 
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-              Gerenciamento de Escolas
-            </h1>
-
-            <p className="text-sm text-gray-500 mt-1">
-              Crie, modifique, consulte, desative e reative os estabelecimentos escolares.
-            </p>
-          </div>
-
-          <button
-            onClick={openCreateModal}
-            className="cursor-pointer inline-flex items-center justify-center gap-2 rounded-xl bg-blue-700 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-700/20 hover:bg-blue-800 active:scale-[0.98] transition"
-          >
-            <span className="text-lg leading-none">+</span>
-            Nova Escola
-          </button>
+        <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <MetricCard
+            title="Total d’écoles"
+            value={totalSchools}
+            variant="primary"
+            icon={<span className="text-xl">🏫</span>}
+          />
+          <MetricCard
+            title="Écoles actives"
+            value={activeSchools}
+            variant="success"
+            icon={<span className="text-xl">✅</span>}
+          />
+          <MetricCard
+            title="Écoles désactivées"
+            value={inactiveSchools}
+            variant="warning"
+            icon={<span className="text-xl">⛔</span>}
+          />
         </section>
 
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <StatCard title="Total de escolas" value={totalSchools} icon="🏫" />
-          <StatCard title="Escolas ativas" value={activeSchools} icon="✅" />
-          <StatCard title="Escolas desativadas" value={inactiveSchools} icon="⛔" />
-        </section>
-
-        <section className="bg-white border border-gray-200 rounded-3xl shadow-sm overflow-hidden">
-          <div className="p-5 border-b border-gray-100 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <section className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-[var(--card-shadow)] ring-1 ring-slate-950/[0.02]">
+          <div className="flex flex-col gap-4 border-b border-slate-100 p-5 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <h2 className="font-semibold text-lg">Lista de Escolas</h2>
-              <p className="text-sm text-gray-500">
-                {filteredSchools.length} resultado(s) encontrado(s)
+              <h2 className="text-lg font-semibold text-slate-900">Liste des écoles</h2>
+              <p className="text-sm text-slate-500">
+                {filteredSchools.length} résultat(s)
               </p>
             </div>
 
             <div className="w-full lg:w-[380px]">
-              <div className="flex items-center rounded-2xl border border-gray-200 bg-gray-50 px-4 focus-within:ring-2 focus-within:ring-blue-600">
-                <span className="text-gray-400">🔍</span>
+              <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50 px-4 transition focus-within:border-indigo-300 focus-within:ring-2 focus-within:ring-indigo-500/20">
+                <span className="text-slate-400">🔍</span>
                 <input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Buscar por nome, código, email, cidade..."
-                  className="w-full bg-transparent px-3 py-3 text-sm outline-none"
+                  placeholder="Rechercher par nom, code, email, ville..."
+                  className="w-full bg-transparent px-3 py-3 text-sm text-slate-800 outline-none placeholder:text-slate-400"
                 />
               </div>
             </div>
@@ -332,7 +337,7 @@ export default function SchoolsPage() {
 
           <div className="hidden xl:block overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-gray-50 text-gray-500">
+              <thead className="border-b border-slate-200 bg-slate-50/90 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
                 <tr>
                   <th className="text-left px-5 py-4 font-medium">Escola</th>
                   <th className="text-left px-5 py-4 font-medium">Código</th>
@@ -358,10 +363,10 @@ export default function SchoolsPage() {
                   </tr>
                 ) : (
                   filteredSchools.map((school) => (
-                    <tr key={school.id} className="hover:bg-gray-50 transition">
+                    <tr key={school.id} className="border-slate-100 transition hover:bg-slate-50/80">
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="h-11 w-11 rounded-2xl bg-blue-700 text-white flex items-center justify-center font-bold">
+                          <div className="h-11 w-11 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-bold">
                             {getInitials(school.name)}
                           </div>
                           <div>
@@ -372,7 +377,7 @@ export default function SchoolsPage() {
                       </td>
 
                       <td className="px-5 py-4">
-                        <span className="rounded-full bg-blue-50 text-blue-700 px-3 py-1 text-xs font-medium">
+                        <span className="rounded-full bg-indigo-50 text-indigo-700 px-3 py-1 text-xs font-medium">
                           {school.code || "Não definido"}
                         </span>
                       </td>
@@ -426,7 +431,7 @@ export default function SchoolsPage() {
                 >
                   <div className="flex items-start justify-between gap-3 mb-4">
                     <div className="flex items-center gap-3">
-                      <div className="h-12 w-12 rounded-2xl bg-blue-700 text-white flex items-center justify-center font-bold">
+                      <div className="h-12 w-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-bold">
                         {getInitials(school.name)}
                       </div>
 
@@ -460,7 +465,7 @@ export default function SchoolsPage() {
             )}
           </div>
         </section>
-      </main>
+      </div>
 
       {modalOpen && (
         <Modal
@@ -505,7 +510,7 @@ export default function SchoolsPage() {
             <button
               onClick={saveSchool}
               disabled={saving}
-              className="cursor-pointer rounded-xl bg-blue-700 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-800 disabled:opacity-60 transition"
+              className="cursor-pointer rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-60 transition"
             >
               {saving ? "Salvando..." : selected ? "Atualizar" : "Criar Escola"}
             </button>
@@ -516,8 +521,8 @@ export default function SchoolsPage() {
       {detailsOpen && selected && (
         <Modal title="Detalhes da Escola" onClose={() => setDetailsOpen(false)}>
           <div className="space-y-4">
-            <div className="flex items-center gap-4 rounded-3xl bg-blue-50 p-4">
-              <div className="h-14 w-14 rounded-2xl bg-blue-700 text-white flex items-center justify-center font-bold">
+            <div className="flex items-center gap-4 rounded-3xl bg-indigo-50 p-4">
+              <div className="h-14 w-14 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-bold">
                 {getInitials(selected.name)}
               </div>
 
@@ -542,7 +547,7 @@ export default function SchoolsPage() {
                   setDetailsOpen(false);
                   openEditModal(selected);
                 }}
-                className="cursor-pointer rounded-xl bg-blue-700 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-800 transition"
+                className="cursor-pointer rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-700 transition"
               >
                 Editar
               </button>
@@ -581,24 +586,7 @@ export default function SchoolsPage() {
           </div>
         </Modal>
       )}
-    </div>
-  );
-}
-
-function StatCard({ title, value, icon }: { title: string; value: number; icon: string }) {
-  return (
-    <div className="bg-white border border-gray-200 rounded-3xl p-5 shadow-sm">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm text-gray-500">{title}</p>
-          <p className="text-3xl font-bold mt-1">{value}</p>
-        </div>
-
-        <div className="h-12 w-12 rounded-2xl bg-gray-50 flex items-center justify-center text-xl">
-          {icon}
-        </div>
-      </div>
-    </div>
+    </>
   );
 }
 
@@ -713,7 +701,7 @@ function Input({
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-2 w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:bg-white focus:ring-2 focus:ring-blue-600 transition"
+        className="mt-2 w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500 transition"
       />
     </div>
   );

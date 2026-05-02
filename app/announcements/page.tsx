@@ -1,7 +1,10 @@
 "use client";
 
-export default function AnnoncesPage() {
+import { Megaphone } from "lucide-react";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Button } from "@/components/ui/Button";
 
+export default function AnnoncesPage() {
   const annonces = [
     {
       title: "Rentrée scolaire 2025-2026",
@@ -9,7 +12,7 @@ export default function AnnoncesPage() {
       author: "Jean-Pierre Martin",
       date: "2025-08-15",
       important: true,
-      color: "red",
+      tone: "rose" as const,
     },
     {
       title: "Réunion parents-professeurs",
@@ -17,7 +20,7 @@ export default function AnnoncesPage() {
       author: "Jean-Pierre Martin",
       date: "2025-09-10",
       important: true,
-      color: "red",
+      tone: "rose" as const,
     },
     {
       title: "Examens du premier trimestre",
@@ -25,7 +28,7 @@ export default function AnnoncesPage() {
       author: "Marie Louis",
       date: "2025-11-20",
       important: false,
-      color: "blue",
+      tone: "indigo" as const,
     },
     {
       title: "Journée sportive",
@@ -33,80 +36,57 @@ export default function AnnoncesPage() {
       author: "Jean-Pierre Martin",
       date: "2025-10-25",
       important: false,
-      color: "blue",
+      tone: "indigo" as const,
     },
   ];
 
   return (
-    <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
+    <div className="space-y-8">
+      <PageHeader
+        title="Annonces"
+        description="Communications et actualités de l’établissement."
+        actions={
+          <Button variant="primary" size="md">
+            Nouvelle annonce
+          </Button>
+        }
+      />
 
-      {/* HEADER */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-semibold text-gray-900">
-            Annonces
-          </h1>
-          <p className="text-sm text-gray-500">
-            Communications et actualités
-          </p>
-        </div>
-
-        <button className="flex items-center gap-2 bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-800 text-sm cursor-pointer">
-          <span className="text-lg">+</span>
-          Nouvelle annonce
-        </button>
-      </div>
-
-      {/* LIST */}
       <div className="space-y-4">
-
         {annonces.map((a, i) => (
-          <div
+          <article
             key={i}
-            className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm flex gap-4 hover:shadow-md transition cursor-pointer"
+            className="group flex gap-4 rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[var(--card-shadow)] ring-1 ring-slate-950/[0.02] transition hover:border-indigo-200/80 hover:shadow-md"
           >
-
-            {/* ICON */}
             <div
-              className={`w-10 h-10 rounded-lg flex items-center justify-center text-lg shrink-0 ${
-                a.color === "red"
-                  ? "bg-red-100 text-red-600"
-                  : "bg-blue-100 text-blue-600"
+              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white shadow-sm ${
+                a.tone === "rose"
+                  ? "bg-linear-to-br from-rose-500 to-rose-600"
+                  : "bg-linear-to-br from-indigo-500 to-violet-600"
               }`}
             >
-              📢
+              <Megaphone size={20} strokeWidth={2} aria-hidden />
             </div>
 
-            {/* CONTENT */}
-            <div className="flex-1">
-
-              <div className="flex items-center gap-2 mb-1 flex-wrap">
-                <h3 className="font-semibold text-gray-900">
-                  {a.title}
-                </h3>
-
-                {a.important && (
-                  <span className="bg-red-100 text-red-600 text-xs px-2 py-0.5 rounded-full">
+            <div className="min-w-0 flex-1">
+              <div className="mb-1 flex flex-wrap items-center gap-2">
+                <h3 className="font-semibold text-slate-900">{a.title}</h3>
+                {a.important ? (
+                  <span className="rounded-full bg-rose-50 px-2 py-0.5 text-xs font-medium text-rose-700 ring-1 ring-rose-100">
                     Important
                   </span>
-                )}
+                ) : null}
               </div>
 
-              <p className="text-sm text-gray-600 mb-2">
-                {a.content}
-              </p>
+              <p className="text-sm leading-relaxed text-slate-600">{a.content}</p>
 
-              <p className="text-xs text-gray-400">
-                {a.author} • {a.date}
+              <p className="mt-3 text-xs font-medium text-slate-400">
+                {a.author} · {a.date}
               </p>
-
             </div>
-
-          </div>
+          </article>
         ))}
-
       </div>
-
     </div>
   );
 }

@@ -1,7 +1,9 @@
 "use client";
 
-export default function AttendancePage() {
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Button } from "@/components/ui/Button";
 
+export default function AttendancePage() {
   const students = [
     { name: "Pierre Duval", initials: "PD", class: "6ème A", status: "present" },
     { name: "Marie Joseph", initials: "MJ", class: "6ème A", status: "present" },
@@ -10,22 +12,14 @@ export default function AttendancePage() {
   ];
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-8">
+      <PageHeader
+        title="Gestion des présences"
+        description="Enregistrer et consulter les présences par classe."
+      />
 
-      {/* HEADER */}
-      <div>
-        <h1 className="text-2xl font-semibold text-gray-900">
-          Gestion des présences
-        </h1>
-        <p className="text-sm text-gray-500">
-          Enregistrer et consulter les présences
-        </p>
-      </div>
-
-      {/* FILTERS */}
-      <div className="flex gap-3">
-
-        <select className="border border-gray-300 rounded-lg px-3 py-2 bg-white text-sm cursor-pointer focus:ring-2 focus:ring-blue-500">
+      <div className="flex flex-wrap items-center gap-2">
+        <select className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-800 shadow-sm outline-none transition focus:border-indigo-300 focus:ring-2 focus:ring-indigo-500/20">
           <option>6ème A</option>
           <option>5ème A</option>
           <option>4ème A</option>
@@ -34,96 +28,70 @@ export default function AttendancePage() {
         <input
           type="date"
           defaultValue="2025-09-02"
-          className="border border-gray-300 rounded-lg px-3 py-2 bg-white text-sm cursor-pointer focus:ring-2 focus:ring-blue-500"
+          className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-800 shadow-sm outline-none transition focus:border-indigo-300 focus:ring-2 focus:ring-indigo-500/20"
         />
 
-        <button className="bg-blue-700 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-800 transition cursor-pointer">
+        <Button variant="primary" size="md" className="sm:ml-1">
           Enregistrer
-        </button>
-
+        </Button>
       </div>
 
-      {/* TABLE */}
-      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
-
+      <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-[var(--card-shadow)] ring-1 ring-slate-950/[0.02]">
         <table className="w-full text-sm">
-
-          {/* HEADER */}
-          <thead className="bg-gray-100 text-gray-600 uppercase text-xs">
+          <thead className="border-b border-slate-200 bg-slate-50/90 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
             <tr>
-              <th className="px-5 py-3 text-left">Élève</th>
-              <th className="px-5 py-3 text-left">Classe</th>
-              <th className="px-5 py-3 text-left">Statut</th>
+              <th className="px-5 py-3">Élève</th>
+              <th className="px-5 py-3">Classe</th>
+              <th className="px-5 py-3">Statut</th>
             </tr>
           </thead>
 
-          {/* BODY */}
-          <tbody>
+          <tbody className="divide-y divide-slate-100">
             {students.map((s, i) => (
-              <tr
-                key={i}
-                className="border-t hover:bg-gray-100 transition cursor-pointer"
-              >
-
-                {/* NAME */}
+              <tr key={i} className="transition hover:bg-slate-50/80">
                 <td className="px-5 py-4">
                   <div className="flex items-center gap-3">
-
-                    <div className="bg-blue-700 text-white w-9 h-9 rounded-full flex items-center justify-center text-xs font-semibold">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-indigo-600 to-violet-600 text-xs font-semibold text-white shadow-sm">
                       {s.initials}
                     </div>
-
-                    <p className="font-medium text-gray-900">
-                      {s.name}
-                    </p>
-
+                    <p className="font-medium text-slate-900">{s.name}</p>
                   </div>
                 </td>
 
-                {/* CLASS */}
-                <td className="px-5 py-4 text-gray-700">
-                  {s.class}
-                </td>
+                <td className="px-5 py-4 text-slate-700">{s.class}</td>
 
-                {/* STATUS */}
                 <td className="px-5 py-4">
                   <StatusBadge status={s.status} />
                 </td>
-
               </tr>
             ))}
           </tbody>
-
         </table>
-
       </div>
-
     </div>
   );
 }
 
-/* STATUS BADGE */
-function StatusBadge({ status }: any) {
-
+function StatusBadge({ status }: { status: string }) {
   if (status === "present") {
     return (
-      <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">
-        ✓ Présent
+      <span className="inline-flex rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-800 ring-1 ring-emerald-100">
+        Présent
       </span>
     );
   }
 
   if (status === "absent") {
     return (
-      <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-medium">
-        ✕ Absent
+      <span className="inline-flex rounded-full bg-red-50 px-2.5 py-0.5 text-xs font-medium text-red-800 ring-1 ring-red-100">
+        Absent
       </span>
     );
   }
 
   return (
-    <span className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-medium">
-      ⏱ En retard
+    <span className="inline-flex rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-800 ring-1 ring-amber-100">
+      En retard
     </span>
   );
 }

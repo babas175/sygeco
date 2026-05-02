@@ -8,66 +8,76 @@ export default function Header() {
 
   const getTimeOfDay = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return "Bom dia";
-    if (hour < 18) return "Boa tarde";
-    return "Boa noite";
+    if (hour < 12) return "Bonjour";
+    if (hour < 18) return "Bon après-midi";
+    return "Bonsoir";
   };
 
   return (
-    <header className="h-20 bg-white border-b border-gray-200 flex items-center justify-between px-8 shadow-sm relative z-20">
-
-      <div className="flex items-center gap-3">
+    <header className="sticky top-0 z-30 flex h-[4.25rem] shrink-0 items-center justify-between gap-4 border-b border-gradient-to-r from-indigo-200/20 to-purple-200/20 bg-gradient-to-r from-white/95 via-slate-50/95 to-white/95 px-4 backdrop-blur-xl shadow-sm shadow-indigo-500/5 sm:px-6 lg:px-8">
+      <div className="min-w-0 flex items-center gap-3">
         <div className="flex flex-col">
-          <p className="text-sm font-semibold text-gray-900">
-            {getTimeOfDay()} 👋
+          <p className="truncate text-sm font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+            {getTimeOfDay()}
           </p>
-          <p className="text-xs text-gray-500 font-medium">
-            {new Date().toLocaleDateString("pt-BR", {
+          <p className="hidden text-xs font-medium text-slate-500 sm:block">
+            {new Date().toLocaleDateString("fr-FR", {
               weekday: "long",
               year: "numeric",
               month: "long",
-              day: "numeric"
+              day: "numeric",
             })}
           </p>
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
-
-        {/* SEARCH BAR */}
-        <div className="hidden md:flex relative">
-          <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+      <div className="flex items-center gap-2 sm:gap-3">
+        <div className="relative hidden md:block">
+          <Search
+            size={17}
+            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+            aria-hidden
+          />
           <input
-            type="text"
-            placeholder="Pesquisar..."
-            className="pl-10 pr-4 py-2 bg-gray-100 border border-gray-200 rounded-xl text-sm text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all"
+            type="search"
+            placeholder="Rechercher..."
+            className="w-56 rounded-xl border border-indigo-200/30 bg-gradient-to-r from-slate-50 to-indigo-50/50 py-2 pl-9 pr-3 text-sm text-slate-800 placeholder:text-slate-400 transition focus:border-indigo-400 focus:bg-white focus:ring-2 focus:ring-indigo-500/30 focus:shadow-lg focus:shadow-indigo-500/10 lg:w-72"
+            aria-label="Recherche"
           />
         </div>
 
-        {/* NOTIFICATIONS */}
-        <button className="relative p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-300">
-          <Bell size={20} />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+        <button
+          type="button"
+          className="relative rounded-xl p-2 text-slate-500 transition duration-300 hover:bg-gradient-to-r hover:from-indigo-100/80 hover:to-purple-100/80 hover:text-indigo-600 hover:shadow-md hover:shadow-indigo-500/20"
+          aria-label="Notifications"
+        >
+          <Bell size={20} strokeWidth={1.75} />
+          <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 ring-2 ring-white animate-pulse" />
         </button>
 
-        {/* USER PROFILE */}
-        <div className="flex items-center gap-4 pl-4 border-l border-gray-200">
-          <div className="hidden sm:flex flex-col items-end">
-            <p className="text-sm font-semibold text-gray-900">
-              {user?.email?.split("@")[0]}
+        <div className="flex items-center gap-3 border-l border-indigo-200/20 pl-3 sm:pl-4">
+          <div className="hidden text-right sm:block">
+            <p className="max-w-[10rem] truncate text-sm font-semibold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+              {user?.email?.split("@")[0] || "Usuário"}
             </p>
-            <p className="text-xs text-gray-500 font-medium">
-              {user?.role === "SUPERADMIN" ? "Administrador" : "Gestor"}
+            <p className="text-xs font-medium text-slate-500">
+              {user?.role === "SUPERADMIN"
+                ? "Super administrateur"
+                : user?.role === "ADMIN"
+                  ? "Gestionnaire"
+                  : user?.role === "PROF"
+                    ? "Enseignant"
+                    : user?.role === "ELEVE"
+                      ? "Élève"
+                      : "Utilisateur"}
             </p>
           </div>
 
-          <div className="w-10 h-10 bg-linear-to-br from-blue-500 to-blue-600 text-white flex items-center justify-center rounded-xl font-bold shadow-md hover:shadow-lg transition-all cursor-pointer">
-            {user?.email?.[0]?.toUpperCase()}
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-indigo-400 to-purple-600 text-sm font-bold text-white shadow-lg shadow-indigo-500/30 ring-2 ring-white/80 hover:shadow-xl hover:shadow-indigo-500/40 transition-all duration-300 cursor-pointer">
+            {user?.email?.[0]?.toUpperCase() || "U"}
           </div>
         </div>
-
       </div>
-
     </header>
   );
 }

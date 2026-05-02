@@ -2,6 +2,8 @@
 
 import { api } from "@/lib/api";
 import { useEffect, useMemo, useState } from "react";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Button } from "@/components/ui/Button";
 
 export default function EnseignantsPage() {
   const [teachers, setTeachers] = useState<any[]>([]);
@@ -90,66 +92,60 @@ export default function EnseignantsPage() {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-8">
+      <PageHeader
+        title="Enseignants"
+        description={`${filtered.length} enseignant${filtered.length !== 1 ? "s" : ""}`}
+        actions={
+          <Button variant="primary" size="md" type="button" onClick={() => setOpen(true)}>
+            Nouvel enseignant
+          </Button>
+        }
+      />
 
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-xl font-semibold">Enseignants</h1>
-          <p className="text-sm text-gray-500">
-            {filtered.length} enseignants
-          </p>
-        </div>
-
-        <button
-          onClick={() => setOpen(true)}
-          className="flex items-center gap-2 bg-blue-700 text-white px-4 py-2 rounded-xl hover:bg-blue-800 text-sm cursor-pointer"
-        >
-          + Nouvel enseignant
-        </button>
-      </div>
-
-      <div className="w-[350px]">
-        <div className="flex items-center border border-gray-200 rounded-xl bg-white px-3 focus-within:ring-2 focus-within:ring-blue-600">
-          <span className="text-gray-400">🔍</span>
+      <div className="max-w-md">
+        <div className="relative flex items-center rounded-xl border border-slate-200 bg-white px-3 shadow-[var(--card-shadow)] ring-1 ring-slate-950/[0.02] transition focus-within:border-indigo-300 focus-within:ring-2 focus-within:ring-indigo-500/20">
+          <span className="text-slate-400" aria-hidden>
+            🔍
+          </span>
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Rechercher..."
-            className="w-full px-2 py-2 outline-none text-sm"
+            className="w-full border-0 bg-transparent py-2.5 pl-2 text-sm outline-none placeholder:text-slate-400"
           />
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
         {filtered.map((t) => (
           <div
             key={t.id}
-            className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm hover:shadow-md transition"
+            className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[var(--card-shadow)] ring-1 ring-slate-950/[0.02] transition hover:border-indigo-200/80 hover:shadow-md"
           >
-            <div className="flex items-center gap-3 mb-3">
-              <div className="bg-blue-700 text-white w-10 h-10 rounded-full flex items-center justify-center font-semibold">
-                {t.first_name?.[0]}{t.last_name?.[0]}
+            <div className="mb-4 flex items-center gap-3">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-indigo-600 to-violet-600 text-sm font-semibold text-white shadow-sm">
+                {t.first_name?.[0]}
+                {t.last_name?.[0]}
               </div>
-              <div>
-                <p className="font-semibold">
+              <div className="min-w-0">
+                <p className="font-semibold text-slate-900">
                   {t.first_name} {t.last_name}
                 </p>
-                <p className="text-xs text-gray-500">
-                  {t.specialization || "-"}
-                </p>
+                <p className="truncate text-xs text-slate-500">{t.specialization || "—"}</p>
               </div>
             </div>
 
-            <div className="text-xs text-gray-500 space-y-1 mb-3">
-              <p>✉️ {t.email}</p>
-              <p>📞 {t.phone}</p>
+            <div className="mb-4 space-y-1 text-xs text-slate-600">
+              <p>{t.email}</p>
+              <p>{t.phone}</p>
             </div>
 
-            <div className="flex flex-wrap gap-2 mb-3">
+            <div className="mb-3 flex flex-wrap gap-2">
               {(t.Subjects || []).map((s: any) => (
                 <span
                   key={s.id}
-                  className="bg-blue-50 text-blue-600 px-2 py-1 rounded-full text-xs"
+                  className="rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-700 ring-1 ring-indigo-100"
                 >
                   {s.name}
                 </span>
@@ -160,7 +156,7 @@ export default function EnseignantsPage() {
               {(t.Classes || []).map((c: any) => (
                 <span
                   key={c.id}
-                  className="bg-red-50 text-red-600 px-2 py-1 rounded-full text-xs"
+                  className="rounded-full bg-violet-50 px-2 py-0.5 text-xs font-medium text-violet-700 ring-1 ring-violet-100"
                 >
                   {c.name}
                 </span>
@@ -171,35 +167,53 @@ export default function EnseignantsPage() {
       </div>
 
       {open && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white w-full max-w-2xl rounded-2xl p-6 space-y-4 max-h-[90vh] overflow-auto">
-
-            <h2 className="font-semibold text-lg">
-              Nouvel enseignant
-            </h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-[2px]">
+          <div className="max-h-[90vh] w-full max-w-2xl overflow-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl ring-1 ring-slate-950/[0.04]">
+            <h2 className="mb-6 text-lg font-semibold text-slate-900">Nouvel enseignant</h2>
 
             <div className="grid grid-cols-2 gap-4">
-              <Input label="Prénom" value={form.first_name} onChange={(v)=>setForm({...form, first_name:v})}/>
-              <Input label="Nom" value={form.last_name} onChange={(v)=>setForm({...form, last_name:v})}/>
-              <Input label="Email" value={form.email} onChange={(v)=>setForm({...form, email:v})}/>
-              <Input label="Mot de passe" value={form.password} onChange={(v)=>setForm({...form, password:v})}/>
-              <Input label="Téléphone" value={form.phone} onChange={(v)=>setForm({...form, phone:v})}/>
+              <Input
+                label="Prénom"
+                value={form.first_name}
+                onChange={(v) => setForm({ ...form, first_name: v })}
+              />
+              <Input
+                label="Nom"
+                value={form.last_name}
+                onChange={(v) => setForm({ ...form, last_name: v })}
+              />
+              <Input
+                label="Email"
+                value={form.email}
+                onChange={(v) => setForm({ ...form, email: v })}
+              />
+              <Input
+                label="Mot de passe"
+                value={form.password}
+                onChange={(v) => setForm({ ...form, password: v })}
+              />
+              <Input
+                label="Téléphone"
+                value={form.phone}
+                onChange={(v) => setForm({ ...form, phone: v })}
+              />
             </div>
 
             {subjects.length > 0 && (
-              <div>
-                <p className="text-sm mb-2">Matières</p>
+              <div className="mt-5">
+                <p className="mb-2 text-sm font-medium text-slate-700">Matières</p>
                 <div className="flex flex-wrap gap-2">
                   {subjects.map((s) => (
                     <button
                       key={s.id}
+                      type="button"
                       onClick={() =>
-                        toggleArray(s.id, form.subjects, (v)=>setForm({...form, subjects:v}))
+                        toggleArray(s.id, form.subjects, (v) => setForm({ ...form, subjects: v }))
                       }
-                      className={`px-3 py-1 rounded-full text-xs cursor-pointer ${
+                      className={`cursor-pointer rounded-full px-3 py-1 text-xs font-medium transition ${
                         form.subjects.includes(s.id)
-                          ? "bg-blue-600 text-white"
-                          : "bg-gray-100"
+                          ? "bg-indigo-600 text-white shadow-sm"
+                          : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                       }`}
                     >
                       {s.name}
@@ -210,19 +224,20 @@ export default function EnseignantsPage() {
             )}
 
             {classes.length > 0 && (
-              <div>
-                <p className="text-sm mb-2">Classes</p>
+              <div className="mt-5">
+                <p className="mb-2 text-sm font-medium text-slate-700">Classes</p>
                 <div className="flex flex-wrap gap-2">
                   {classes.map((c) => (
                     <button
                       key={c.id}
+                      type="button"
                       onClick={() =>
-                        toggleArray(c.id, form.classes, (v)=>setForm({...form, classes:v}))
+                        toggleArray(c.id, form.classes, (v) => setForm({ ...form, classes: v }))
                       }
-                      className={`px-3 py-1 rounded-full text-xs cursor-pointer ${
+                      className={`cursor-pointer rounded-full px-3 py-1 text-xs font-medium transition ${
                         form.classes.includes(c.id)
-                          ? "bg-red-600 text-white"
-                          : "bg-gray-100"
+                          ? "bg-violet-600 text-white shadow-sm"
+                          : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                       }`}
                     >
                       {c.name}
@@ -232,22 +247,15 @@ export default function EnseignantsPage() {
               </div>
             )}
 
-            <div className="flex justify-end gap-3 pt-3">
-              <button
-                onClick={() => setOpen(false)}
-                className="px-4 py-2 border rounded-lg cursor-pointer"
-              >
+            <div className="mt-8 flex justify-end gap-3 border-t border-slate-100 pt-6">
+              <Button variant="outline" type="button" onClick={() => setOpen(false)}>
                 Annuler
-              </button>
+              </Button>
 
-              <button
-                onClick={createTeacher}
-                className="px-4 py-2 bg-blue-700 text-white rounded-lg cursor-pointer"
-              >
+              <Button variant="primary" type="button" onClick={createTeacher}>
                 Créer
-              </button>
+              </Button>
             </div>
-
           </div>
         </div>
       )}
@@ -264,11 +272,11 @@ type InputProps = {
 function Input({ label, value, onChange }: InputProps) {
   return (
     <div>
-      <label className="text-sm">{label}</label>
+      <label className="mb-1.5 block text-sm font-medium text-slate-700">{label}</label>
       <input
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full mt-1 px-3 py-2 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-600 outline-none"
+        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none transition focus:border-indigo-300 focus:bg-white focus:ring-2 focus:ring-indigo-500/20"
       />
     </div>
   );

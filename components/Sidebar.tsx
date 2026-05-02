@@ -1,8 +1,10 @@
 "use client";
 
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getUser, logout } from "@/lib/auth";
+import { useSidebar } from "@/components/SidebarContext";
 
 import {
   LayoutDashboard,
@@ -16,163 +18,172 @@ import {
   BarChart3,
   Settings,
   LogOut,
-  ChevronRight
 } from "lucide-react";
 
 export default function Sidebar() {
   const pathname = usePathname();
   const user = getUser();
+  const { closeSidebar } = useSidebar();
 
-  const linkClass = (path: string) =>
-    `flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all duration-300 group ${
-      pathname === path
-        ? "bg-white/15 font-semibold text-white shadow-lg backdrop-blur-md border border-white/20"
-        : "text-blue-100 hover:bg-white/10 hover:text-white"
-    }`;
+  const linkClass = (path: string) => {
+    const active = pathname === path;
+    return [
+      "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-300 relative overflow-hidden",
+      active
+        ? "bg-linear-to-r from-indigo-500/20 to-purple-500/20 text-white shadow-lg shadow-indigo-500/20 ring-1 ring-indigo-400/30"
+        : "text-slate-400 hover:text-white hover:shadow-md hover:shadow-indigo-500/10",
+    ].join(" ");
+  };
 
-  const renderNavLink = (path: string, icon: React.ReactNode, label: string) => (
-    <Link href={path} className={linkClass(path)}>
-      <div className={`transition-transform duration-300 ${pathname === path ? "scale-110" : "group-hover:scale-110"}`}>
+  const renderNavLink = (path: string, icon: ReactNode, label: string) => (
+    <Link href={path} className={linkClass(path)} onClick={closeSidebar}>
+      <span
+        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-all duration-300 group-hover:scale-110 ${
+          pathname === path
+            ? "bg-linear-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/50"
+            : "bg-white/8 text-slate-300 group-hover:bg-linear-to-br group-hover:from-indigo-500/40 group-hover:to-purple-500/40 group-hover:text-white"
+        }`}
+      >
         {icon}
-      </div>
-      <span>{label}</span>
-      {pathname === path && (
-        <ChevronRight size={16} className="ml-auto opacity-60" />
-      )}
+      </span>
+      <span className="truncate">{label}</span>
+      {pathname === path ? (
+        <span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-linear-to-r from-indigo-400 to-purple-400 shadow-lg shadow-indigo-400/50" aria-hidden />
+      ) : null}
     </Link>
   );
 
+  const SectionLabel = ({ children }: { children: ReactNode }) => (
+    <p className="mb-3 mt-6 px-3 text-[10px] font-bold uppercase tracking-widest bg-linear-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent first:mt-3">
+      {children}
+    </p>
+  );
+
   return (
-    <aside className="w-64 bg-linear-to-br from-blue-600 via-blue-700 to-indigo-900 text-white flex flex-col justify-between shadow-2xl relative overflow-hidden">
-      {/* Background effects */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full mix-blend-multiply filter blur-3xl"></div>
-      </div>
-      <div className="relative z-10">
-        {/* LOGO SECTION */}
-        <div className="p-6 border-b border-white/10 flex items-center gap-4 bg-white/5 backdrop-blur-md">
-          <div className="bg-white/20 p-3 rounded-2xl hover:bg-white/30 transition-all duration-300 shadow-xl border border-white/20">
-            <div className="w-8 h-8 bg-linear-to-br from-white to-blue-100 rounded-lg flex items-center justify-center font-bold text-blue-700">
+    <aside className="relative flex h-full w-66 shrink-0 flex-col border-r border-indigo-500/20 bg-linear-to-b from-slate-950 via-slate-900 to-slate-950">
+      {/* Background gradient effect */}
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(1000px_circle_at_20%_-30%,rgba(99,102,241,0.25),transparent_50%)]"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(800px_circle_at_80%_120%,rgba(168,85,247,0.15),transparent_50%)]"
+        aria-hidden
+      />
+
+      <div className="relative flex flex-1 flex-col overflow-hidden">
+        {/* Logo Section */}
+        <div className="border-b border-indigo-500/20 bg-linear-to-b from-slate-900/80 to-slate-900/40 px-5 py-6">
+          <Link href="/dashboard" className="flex items-center gap-3 group">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-linear-to-br from-indigo-500 via-indigo-400 to-purple-600 text-lg font-bold text-white shadow-xl shadow-indigo-500/50 ring-1 ring-white/20 group-hover:shadow-2xl group-hover:shadow-indigo-500/60 transition-all duration-300">
               S
             </div>
-          </div>
-
-          <div className="flex flex-col">
-            <h1 className="text-white font-bold text-xl tracking-tight">
-              SYGECO
-            </h1>
-            <span className="text-xs text-blue-200 font-medium leading-tight">
-              Système d'Éducation
-            </span>
-          </div>
-        </div>
-
-        {/* USER INFO */}
-        <div className="p-4 border-b border-white/10 bg-white/5 backdrop-blur-md">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-linear-to-br from-white/30 to-white/10 text-white flex items-center justify-center rounded-xl font-bold border border-white/20">
-              {user?.email?.[0]?.toUpperCase()}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-white truncate">
-                {user?.email?.split("@")[0]}
+            <div className="min-w-0">
+              <p className="truncate text-base font-bold tracking-tight text-white group-hover:text-indigo-200 transition-colors">
+                SYGECO
               </p>
-              <p className="text-xs text-blue-200 font-medium">
-                {user?.role === "SUPERADMIN" ? "👑 Admin" : "🏫 Gestionnaire"}
+              <p className="truncate text-xs font-medium text-slate-400 group-hover:text-indigo-300 transition-colors">
+                Espace numérique scolaire
               </p>
             </div>
-          </div>
+          </Link>
         </div>
 
-        {/* NAVIGATION */}
-        <nav className="p-4 space-y-1 text-sm">
-          {/* Dashboard */}
-          {renderNavLink("/dashboard", <LayoutDashboard size={18} />, "Tableau de bord")}
+        {/* Navigation */}
+        <nav className="flex-1 overflow-y-auto px-3 py-4 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-indigo-500/20 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-indigo-500/40">
+          {renderNavLink(
+            "/dashboard",
+            <LayoutDashboard size={17} strokeWidth={2} />,
+            "Tableau de bord"
+          )}
 
           {user?.role === "SUPERADMIN" && (
             <>
-              <div className="pt-3 pb-2">
-                <p className="text-xs font-bold text-blue-300 uppercase tracking-wider px-4 opacity-70">
-                  Admin
-                </p>
-              </div>
-
-              {renderNavLink("/schools", <School size={18} />, "Écoles")}
-              {renderNavLink("/reports", <BarChart3 size={18} />, "Rapports")}
-              {renderNavLink("/settings", <Settings size={18} />, "Paramètres")}
+              <SectionLabel>Administration</SectionLabel>
+              {renderNavLink("/schools", <School size={17} strokeWidth={2} />, "Écoles")}
+              {renderNavLink(
+                "/reports",
+                <BarChart3 size={17} strokeWidth={2} />,
+                "Rapports"
+              )}
+              {renderNavLink(
+                "/settings",
+                <Settings size={17} strokeWidth={2} />,
+                "Paramètres"
+              )}
             </>
           )}
 
           {user?.role === "ADMIN" && (
             <>
-              <div className="pt-3 pb-2">
-                <p className="text-xs font-bold text-blue-300 uppercase tracking-wider px-4 opacity-70">
-                  Gestion
-                </p>
-              </div>
-
-              {renderNavLink("/students", <Users size={18} />, "Élèves")}
-              {renderNavLink("/teachers", <GraduationCap size={18} />, "Enseignants")}
-              
-              <div className="pt-3 pb-2">
-                <p className="text-xs font-bold text-blue-300 uppercase tracking-wider px-4 opacity-70">
-                  Académique
-                </p>
-              </div>
-
-              {renderNavLink("/attendance", <ClipboardCheck size={18} />, "Présences")}
-              {renderNavLink("/grades", <BookOpen size={18} />, "Notes")}
-              {renderNavLink("/schedule", <Calendar size={18} />, "Emploi du temps")}
-
-              <div className="pt-3 pb-2">
-                <p className="text-xs font-bold text-blue-300 uppercase tracking-wider px-4 opacity-70">
-                  Communication
-                </p>
-              </div>
-
-              {renderNavLink("/announcements", <Megaphone size={18} />, "Annonces")}
+              <SectionLabel>Gestion</SectionLabel>
+              {renderNavLink("/students", <Users size={17} strokeWidth={2} />, "Élèves")}
+              {renderNavLink(
+                "/teachers",
+                <GraduationCap size={17} strokeWidth={2} />,
+                "Enseignants"
+              )}
+              <SectionLabel>Académique</SectionLabel>
+              {renderNavLink(
+                "/attendance",
+                <ClipboardCheck size={17} strokeWidth={2} />,
+                "Présences"
+              )}
+              {renderNavLink("/grades", <BookOpen size={17} strokeWidth={2} />, "Notes")}
+              {renderNavLink(
+                "/schedule",
+                <Calendar size={17} strokeWidth={2} />,
+                "Emploi du temps"
+              )}
+              <SectionLabel>Communication</SectionLabel>
+              {renderNavLink(
+                "/announcements",
+                <Megaphone size={17} strokeWidth={2} />,
+                "Annonces"
+              )}
             </>
           )}
 
           {user?.role === "PROF" && (
             <>
-              <div className="pt-3 pb-2">
-                <p className="text-xs font-bold text-blue-300 uppercase tracking-wider px-4 opacity-70">
-                  Enseignement
-                </p>
-              </div>
-
-              {renderNavLink("/grades", <BookOpen size={18} />, "Notes")}
-              {renderNavLink("/schedule", <Calendar size={18} />, "Emploi du temps")}
+              <SectionLabel>Enseignement</SectionLabel>
+              {renderNavLink("/grades", <BookOpen size={17} strokeWidth={2} />, "Notes")}
+              {renderNavLink(
+                "/schedule",
+                <Calendar size={17} strokeWidth={2} />,
+                "Emploi du temps"
+              )}
             </>
           )}
 
           {user?.role === "ELEVE" && (
             <>
-              <div className="pt-3 pb-2">
-                <p className="text-xs font-bold text-blue-300 uppercase tracking-wider px-4 opacity-70">
-                  Académique
-                </p>
-              </div>
-
-              {renderNavLink("/grades", <BookOpen size={18} />, "Mes notes")}
+              <SectionLabel>Académique</SectionLabel>
+              {renderNavLink(
+                "/grades",
+                <BookOpen size={17} strokeWidth={2} />,
+                "Mes notes"
+              )}
             </>
           )}
         </nav>
-      </div>
 
-      {/* FOOTER / LOGOUT */}
-      <div className="relative z-10 p-4 border-t border-white/10 bg-white/5 backdrop-blur-md">
-        <button
-          onClick={() => {
-            logout();
-            globalThis.window.location.href = "/login";
-          }}
-          className="w-full flex items-center gap-3 px-4 py-3 text-blue-100 hover:text-white hover:bg-red-500/20 rounded-xl transition-all duration-300 font-medium group"
-        >
-          <LogOut size={18} className="group-hover:rotate-12 transition-transform duration-300" />
-          <span>Déconnexion</span>
-        </button>
+        {/* Logout Button */}
+        <div className="relative border-t border-indigo-500/20 bg-linear-to-t from-slate-900/40 to-slate-900/0 p-3">
+          <button
+            type="button"
+            onClick={() => {
+              logout();
+              globalThis.window.location.href = "/login";
+            }}
+            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-400 transition-all duration-300 hover:bg-linear-to-r hover:from-red-500/20 hover:to-rose-500/20 hover:text-red-300 hover:shadow-lg hover:shadow-red-500/20"
+          >
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/8 group-hover:bg-red-500/20 transition-all duration-300">
+              <LogOut size={17} strokeWidth={2} />
+            </span>
+            Déconnexion
+          </button>
+        </div>
       </div>
     </aside>
   );

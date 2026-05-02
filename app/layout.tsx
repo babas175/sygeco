@@ -1,44 +1,49 @@
 "use client";
 
+import type { ReactNode } from "react";
 import "./globals.css";
 import { usePathname } from "next/navigation";
 
 import Sidebar from "@/components/Sidebar";
+import {
+  MobileSidebarOverlay,
+  SidebarProvider,
+} from "@/components/SidebarContext";
+
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Header from "@/components/Header";
 
-export default function RootLayout({ children }: any) {
+export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   const pathname = usePathname();
 
   if (pathname === "/login") {
     return (
       <html lang="fr">
-        <body>{children}</body>
+        <body className="min-h-screen font-sans antialiased">{children}</body>
       </html>
     );
   }
 
   return (
     <html lang="fr">
-      <body className="bg-linear-to-br from-gray-50 via-white to-gray-50">
+      <body className="min-h-screen bg-linear-to-br from-slate-50 via-white to-indigo-50/30 font-sans text-slate-900 antialiased">
         <ProtectedRoute>
-          <div className="flex h-screen bg-gray-50 overflow-hidden">
+          <SidebarProvider>
+            <div className="flex h-screen min-h-0 overflow-hidden">
+              <MobileSidebarOverlay />
+              <Sidebar />
 
-            <Sidebar />
+              <div className="flex min-w-0 flex-1 flex-col lg:min-w-0">
+                <Header />
 
-            <div className="flex-1 flex flex-col bg-white">
-
-              <Header />
-
-              <main className="flex-1 p-8 overflow-auto bg-linear-to-br from-gray-50 via-white to-gray-50">
-                <div className="max-w-7xl mx-auto">
-                  {children}
-                </div>
-              </main>
-
+                <main className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain bg-linear-to-b from-transparent to-indigo-50/50">
+                  <div className="mx-auto max-w-7xl px-3 py-6 sm:px-6 lg:px-8 lg:py-10">
+                    <div>{children}</div>
+                  </div>
+                </main>
+              </div>
             </div>
-
-          </div>
+          </SidebarProvider>
         </ProtectedRoute>
       </body>
     </html>

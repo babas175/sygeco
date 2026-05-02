@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Card from "@/components/Card";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Button } from "@/components/ui/Button";
 
 export default function ParametresPage() {
   const [form, setForm] = useState({
@@ -13,113 +16,82 @@ export default function ParametresPage() {
   });
 
   return (
-    <div>
+    <div className="space-y-8">
+      <PageHeader
+        title="Paramètres de l’école"
+        description="Configurer les informations générales de l’établissement."
+      />
 
-      <h1 className="text-xl font-semibold mb-1">
-        Paramètres de l'école
-      </h1>
-
-      <p className="text-sm text-gray-500 mb-6">
-        Configurer les informations de l'établissement
-      </p>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-        {/* INFOS ECOLE */}
-        <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-          <h2 className="font-semibold mb-4">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+        <Card padding="lg">
+          <h2 className="mb-6 text-base font-semibold text-slate-900">
             Informations générales
           </h2>
 
-          <div className="space-y-3">
-
-            <Input
-              label="Nom de l'école"
+          <div className="space-y-4">
+            <Field
+              label="Nom de l’école"
               value={form.nom}
-              onChange={(v: string) =>
-                setForm({ ...form, nom: v })
-              }
+              onChange={(v) => setForm({ ...form, nom: v })}
             />
 
-            <Input
+            <Field
               label="Adresse"
               value={form.adresse}
-              onChange={(v: string) =>
-                setForm({ ...form, adresse: v })
-              }
+              onChange={(v) => setForm({ ...form, adresse: v })}
             />
 
-            <Input
+            <Field
               label="Téléphone"
               value={form.telephone}
-              onChange={(v: string) =>
-                setForm({ ...form, telephone: v })
-              }
+              onChange={(v) => setForm({ ...form, telephone: v })}
             />
 
-            <Input
+            <Field
               label="Email"
               value={form.email}
-              onChange={(v: string) =>
-                setForm({ ...form, email: v })
-              }
+              onChange={(v) => setForm({ ...form, email: v })}
             />
 
-            <Input
+            <Field
               label="Directeur"
               value={form.directeur}
-              onChange={(v: string) =>
-                setForm({ ...form, directeur: v })
-              }
+              onChange={(v) => setForm({ ...form, directeur: v })}
             />
 
-            <Input
+            <Field
               label="Année scolaire"
               value={form.annee}
-              onChange={(v: string) =>
-                setForm({ ...form, annee: v })
-              }
+              onChange={(v) => setForm({ ...form, annee: v })}
             />
 
-            <button className="bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-800">
+            <Button variant="primary" size="md" type="button" className="mt-2">
               Sauvegarder
-            </button>
-
+            </Button>
           </div>
-        </div>
+        </Card>
 
-        {/* CONFIGS */}
-        <div className="space-y-4">
-
-          <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-            <h2 className="font-semibold mb-3">
-              Matières
-            </h2>
-
-            <p className="text-sm text-gray-500">
-              Gestion des matières (à implémenter)
+        <div className="space-y-5">
+          <Card padding="lg">
+            <h2 className="mb-2 text-base font-semibold text-slate-900">Matières</h2>
+            <p className="text-sm leading-relaxed text-slate-600">
+              Gestion des matières (à implémenter).
             </p>
-          </div>
+          </Card>
 
-          <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-            <h2 className="font-semibold mb-3">
-              Classes
-            </h2>
-
-            <p className="text-sm text-gray-500">
-              Gestion des classes (à implémenter)
+          <Card padding="lg">
+            <h2 className="mb-2 text-base font-semibold text-slate-900">Classes</h2>
+            <p className="text-sm leading-relaxed text-slate-600">
+              Gestion des classes (à implémenter).
             </p>
-          </div>
-
+          </Card>
         </div>
-
       </div>
     </div>
   );
 }
 
-/* INPUT */
-function Input({
+function Field({
   label,
   value,
   onChange,
@@ -130,14 +102,12 @@ function Input({
 }) {
   return (
     <div>
-      <label className="block text-gray-600 mb-1">
-        {label}
-      </label>
+      <label className="mb-1.5 block text-sm font-medium text-slate-700">{label}</label>
 
       <input
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full border border-gray-200 rounded-lg px-3 py-2"
+        className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-indigo-300 focus:ring-2 focus:ring-indigo-500/20"
       />
     </div>
   );
