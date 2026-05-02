@@ -3,28 +3,28 @@
 import { API_URL } from "@/lib/api";
 import { useEffect, useMemo, useState } from "react";
 
-type Ecole = {
+type School = {
   id: string;
-  nom: string;
+  name: string;
   code?: string;
-  adresse?: string;
-  telephone?: string;
+  address?: string;
+  phone?: string;
   email: string;
-  ville?: string;
-  pays?: string;
-  actif?: boolean;
+  city?: string;
+  country?: string;
+  is_active?: boolean;
   disabled_at?: string | null;
   createdAt?: string;
 };
 
 type FormState = {
-  nom: string;
+  name: string;
   code: string;
-  adresse: string;
-  telephone: string;
+  address: string;
+  phone: string;
   email: string;
-  ville: string;
-  pays: string;
+  city: string;
+  country: string;
   password: string;
 };
 
@@ -34,23 +34,23 @@ type Notification = {
 } | null;
 
 const emptyForm: FormState = {
-  nom: "",
+  name: "",
   code: "",
-  adresse: "",
-  telephone: "",
+  address: "",
+  phone: "",
   email: "",
-  ville: "",
-  pays: "",
+  city: "",
+  country: "",
   password: "",
 };
 
 export default function SchoolsPage() {
-  const [schools, setSchools] = useState<Ecole[]>([]);
+  const [schools, setSchools] = useState<School[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
   const [search, setSearch] = useState("");
-  const [selected, setSelected] = useState<Ecole | null>(null);
+  const [selected, setSelected] = useState<School | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm);
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -76,19 +76,19 @@ export default function SchoolsPage() {
     try {
       setLoading(true);
 
-      const res = await fetch(`${API_URL}/ecoles`, {
+      const res = await fetch(`${API_URL}/schools`, {
         headers,
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data?.error || "Erreur lors du chargement des écoles");
+        throw new Error(data?.error || "Erro ao carregar as escolas");
       }
 
       setSchools(Array.isArray(data) ? data : []);
     } catch (error: any) {
-      notify("error", error.message || "Impossible de charger les écoles");
+      notify("error", error.message || "Impossível carregar as escolas");
     } finally {
       setLoading(false);
     }
@@ -105,12 +105,12 @@ export default function SchoolsPage() {
 
     return schools.filter((school) =>
       [
-        school.nom,
+        school.name,
         school.code,
         school.email,
-        school.telephone,
-        school.ville,
-        school.pays,
+        school.phone,
+        school.city,
+        school.country,
       ]
         .filter(Boolean)
         .some((item) => String(item).toLowerCase().includes(value))
@@ -123,29 +123,29 @@ export default function SchoolsPage() {
     setModalOpen(true);
   }
 
-  function openEditModal(school: Ecole) {
+  function openEditModal(school: School) {
     setSelected(school);
 
     setForm({
-      nom: school.nom || "",
+      name: school.name || "",
       code: school.code || "",
-      adresse: school.adresse || "",
-      telephone: school.telephone || "",
+      address: school.address || "",
+      phone: school.phone || "",
       email: school.email || "",
-      ville: school.ville || "",
-      pays: school.pays || "",
+      city: school.city || "",
+      country: school.country || "",
       password: "",
     });
 
     setModalOpen(true);
   }
 
-  function openDetailsModal(school: Ecole) {
+  function openDetailsModal(school: School) {
     setSelected(school);
     setDetailsOpen(true);
   }
 
-  function openConfirmModal(school: Ecole) {
+  function openConfirmModal(school: School) {
     setSelected(school);
     setConfirmOpen(true);
   }
@@ -154,19 +154,19 @@ export default function SchoolsPage() {
     try {
       setSaving(true);
 
-      if (!form.nom || !form.email || (!selected && !form.password)) {
-        notify("error", "Veuillez remplir les champs obligatoires");
+      if (!form.name || !form.email || (!selected && !form.password)) {
+        notify("error", "Por favor, preencha os campos obrigatórios");
         return;
       }
 
       const payload: any = {
-        nom: form.nom,
+        name: form.name,
         code: form.code,
-        adresse: form.adresse,
-        telephone: form.telephone,
+        address: form.address,
+        phone: form.phone,
         email: form.email,
-        ville: form.ville,
-        pays: form.pays,
+        city: form.city,
+        country: form.country,
       };
 
       if (!selected) {
@@ -174,8 +174,8 @@ export default function SchoolsPage() {
       }
 
       const url = selected
-        ? `${API_URL}/ecoles/${selected.id}`
-        : `${API_URL}/ecoles`;
+        ? `${API_URL}/schools/${selected.id}`
+        : `${API_URL}/schools`;
 
       const res = await fetch(url, {
         method: selected ? "PUT" : "POST",
@@ -186,14 +186,14 @@ export default function SchoolsPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data?.error || "Erreur lors de l'enregistrement");
+        throw new Error(data?.error || "Erro ao salvar");
       }
 
       notify(
         "success",
         selected
-          ? "École mise à jour avec succès"
-          : "École créée avec succès"
+          ? "Escola atualizada com sucesso"
+          : "Escola criada com sucesso"
       );
 
       setModalOpen(false);
@@ -201,7 +201,7 @@ export default function SchoolsPage() {
       setForm(emptyForm);
       await loadSchools();
     } catch (error: any) {
-      notify("error", error.message || "Erreur lors de l'enregistrement");
+      notify("error", error.message || "Erro ao salvar");
     } finally {
       setSaving(false);
     }
@@ -213,7 +213,7 @@ export default function SchoolsPage() {
     try {
       setSaving(true);
 
-      const res = await fetch(`${API_URL}/ecoles/${selected.id}`, {
+      const res = await fetch(`${API_URL}/schools/${selected.id}`, {
         method: "DELETE",
         headers,
       });
@@ -221,25 +221,25 @@ export default function SchoolsPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data?.error || "Erreur lors de la désactivation");
+        throw new Error(data?.error || "Erro ao desativar");
       }
 
-      notify("success", "École désactivée avec succès");
+      notify("success", "Escola desativada com sucesso");
       setConfirmOpen(false);
       setSelected(null);
       await loadSchools();
     } catch (error: any) {
-      notify("error", error.message || "Erreur lors de la désactivation");
+      notify("error", error.message || "Erro ao desativar");
     } finally {
       setSaving(false);
     }
   }
 
-  async function activateSchool(school: Ecole) {
+  async function activateSchool(school: School) {
     try {
       setSaving(true);
 
-      const res = await fetch(`${API_URL}/ecoles/${school.id}/activate`, {
+      const res = await fetch(`${API_URL}/schools/${school.id}/activate`, {
         method: "PUT",
         headers,
       });
@@ -247,21 +247,21 @@ export default function SchoolsPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data?.error || "Erreur lors de la réactivation");
+        throw new Error(data?.error || "Erro ao reativar");
       }
 
-      notify("success", "École réactivée avec succès");
+      notify("success", "Escola reativada com sucesso");
       await loadSchools();
     } catch (error: any) {
-      notify("error", error.message || "Erreur lors de la réactivation");
+      notify("error", error.message || "Erro ao reativar");
     } finally {
       setSaving(false);
     }
   }
 
   const totalSchools = schools.length;
-  const activeSchools = schools.filter((s) => s.actif !== false).length;
-  const inactiveSchools = schools.filter((s) => s.actif === false).length;
+  const activeSchools = schools.filter((s) => s.is_active !== false).length;
+  const inactiveSchools = schools.filter((s) => s.is_active === false).length;
 
   return (
     <div className="min-h-screen bg-[#f6f8fb] text-gray-900">
@@ -281,16 +281,15 @@ export default function SchoolsPage() {
         <section className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 text-blue-700 px-3 py-1 text-xs font-medium mb-3">
-              Super administration
+              Superadministração
             </div>
 
             <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-              Gestion des écoles
+              Gerenciamento de Escolas
             </h1>
 
             <p className="text-sm text-gray-500 mt-1">
-              Créez, modifiez, consultez, désactivez et réactivez les
-              établissements scolaires.
+              Crie, modifique, consulte, desative e reative os estabelecimentos escolares.
             </p>
           </div>
 
@@ -299,22 +298,22 @@ export default function SchoolsPage() {
             className="cursor-pointer inline-flex items-center justify-center gap-2 rounded-xl bg-blue-700 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-700/20 hover:bg-blue-800 active:scale-[0.98] transition"
           >
             <span className="text-lg leading-none">+</span>
-            Nouvelle école
+            Nova Escola
           </button>
         </section>
 
         <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <StatCard title="Total écoles" value={totalSchools} icon="🏫" />
-          <StatCard title="Écoles actives" value={activeSchools} icon="✅" />
-          <StatCard title="Écoles désactivées" value={inactiveSchools} icon="⛔" />
+          <StatCard title="Total de escolas" value={totalSchools} icon="🏫" />
+          <StatCard title="Escolas ativas" value={activeSchools} icon="✅" />
+          <StatCard title="Escolas desativadas" value={inactiveSchools} icon="⛔" />
         </section>
 
         <section className="bg-white border border-gray-200 rounded-3xl shadow-sm overflow-hidden">
           <div className="p-5 border-b border-gray-100 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
-              <h2 className="font-semibold text-lg">Liste des écoles</h2>
+              <h2 className="font-semibold text-lg">Lista de Escolas</h2>
               <p className="text-sm text-gray-500">
-                {filteredSchools.length} résultat(s) trouvé(s)
+                {filteredSchools.length} resultado(s) encontrado(s)
               </p>
             </div>
 
@@ -324,7 +323,7 @@ export default function SchoolsPage() {
                 <input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Rechercher par nom, code, email, ville..."
+                  placeholder="Buscar por nome, código, email, cidade..."
                   className="w-full bg-transparent px-3 py-3 text-sm outline-none"
                 />
               </div>
@@ -335,12 +334,12 @@ export default function SchoolsPage() {
             <table className="w-full text-sm">
               <thead className="bg-gray-50 text-gray-500">
                 <tr>
-                  <th className="text-left px-5 py-4 font-medium">École</th>
-                  <th className="text-left px-5 py-4 font-medium">Code</th>
-                  <th className="text-left px-5 py-4 font-medium">Contact</th>
-                  <th className="text-left px-5 py-4 font-medium">Localisation</th>
-                  <th className="text-left px-5 py-4 font-medium">Statut</th>
-                  <th className="text-right px-5 py-4 font-medium">Actions</th>
+                  <th className="text-left px-5 py-4 font-medium">Escola</th>
+                  <th className="text-left px-5 py-4 font-medium">Código</th>
+                  <th className="text-left px-5 py-4 font-medium">Contato</th>
+                  <th className="text-left px-5 py-4 font-medium">Localização</th>
+                  <th className="text-left px-5 py-4 font-medium">Status</th>
+                  <th className="text-right px-5 py-4 font-medium">Ações</th>
                 </tr>
               </thead>
 
@@ -348,13 +347,13 @@ export default function SchoolsPage() {
                 {loading ? (
                   <tr>
                     <td colSpan={6} className="px-5 py-10 text-center text-gray-500">
-                      Chargement des écoles...
+                      Carregando escolas...
                     </td>
                   </tr>
                 ) : filteredSchools.length === 0 ? (
                   <tr>
                     <td colSpan={6} className="px-5 py-10 text-center text-gray-500">
-                      Aucune école trouvée
+                      Nenhuma escola encontrada
                     </td>
                   </tr>
                 ) : (
@@ -363,10 +362,10 @@ export default function SchoolsPage() {
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-3">
                           <div className="h-11 w-11 rounded-2xl bg-blue-700 text-white flex items-center justify-center font-bold">
-                            {getInitials(school.nom)}
+                            {getInitials(school.name)}
                           </div>
                           <div>
-                            <p className="font-semibold text-gray-900">{school.nom}</p>
+                            <p className="font-semibold text-gray-900">{school.name}</p>
                             <p className="text-xs text-gray-500">{school.email}</p>
                           </div>
                         </div>
@@ -374,32 +373,32 @@ export default function SchoolsPage() {
 
                       <td className="px-5 py-4">
                         <span className="rounded-full bg-blue-50 text-blue-700 px-3 py-1 text-xs font-medium">
-                          {school.code || "Non défini"}
+                          {school.code || "Não definido"}
                         </span>
                       </td>
 
                       <td className="px-5 py-4 text-gray-600">
-                        <p>{school.telephone || "Téléphone non défini"}</p>
+                        <p>{school.phone || "Telefone não definido"}</p>
                         <p className="text-xs text-gray-400">{school.email}</p>
                       </td>
 
                       <td className="px-5 py-4 text-gray-600">
-                        <p>{school.ville || "Ville non définie"}</p>
-                        <p className="text-xs text-gray-400">{school.pays || "Pays non défini"}</p>
+                        <p>{school.city || "Cidade não definida"}</p>
+                        <p className="text-xs text-gray-400">{school.country || "País não definido"}</p>
                       </td>
 
                       <td className="px-5 py-4">
-                        <StatusBadge active={school.actif !== false} />
+                        <StatusBadge active={school.is_active !== false} />
                       </td>
 
                       <td className="px-5 py-4">
                         <div className="flex justify-end gap-2">
-                          <ActionButton label="Voir" onClick={() => openDetailsModal(school)} />
-                          <ActionButton label="Modifier" onClick={() => openEditModal(school)} />
-                          {school.actif === false ? (
-                            <ActionButton label="Réactiver" onClick={() => activateSchool(school)} green />
+                          <ActionButton label="Ver" onClick={() => openDetailsModal(school)} />
+                          <ActionButton label="Editar" onClick={() => openEditModal(school)} />
+                          {school.is_active === false ? (
+                            <ActionButton label="Reativar" onClick={() => activateSchool(school)} green />
                           ) : (
-                            <ActionButton label="Désactiver" onClick={() => openConfirmModal(school)} red />
+                            <ActionButton label="Desativar" onClick={() => openConfirmModal(school)} red />
                           )}
                         </div>
                       </td>
@@ -413,11 +412,11 @@ export default function SchoolsPage() {
           <div className="xl:hidden p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             {loading ? (
               <div className="col-span-full text-center py-10 text-gray-500">
-                Chargement des écoles...
+                Carregando escolas...
               </div>
             ) : filteredSchools.length === 0 ? (
               <div className="col-span-full text-center py-10 text-gray-500">
-                Aucune école trouvée
+                Nenhuma escola encontrada
               </div>
             ) : (
               filteredSchools.map((school) => (
@@ -428,32 +427,32 @@ export default function SchoolsPage() {
                   <div className="flex items-start justify-between gap-3 mb-4">
                     <div className="flex items-center gap-3">
                       <div className="h-12 w-12 rounded-2xl bg-blue-700 text-white flex items-center justify-center font-bold">
-                        {getInitials(school.nom)}
+                        {getInitials(school.name)}
                       </div>
 
                       <div>
-                        <h3 className="font-semibold">{school.nom}</h3>
+                        <h3 className="font-semibold">{school.name}</h3>
                         <p className="text-xs text-gray-500">{school.email}</p>
                       </div>
                     </div>
 
-                    <StatusBadge active={school.actif !== false} />
+                    <StatusBadge active={school.is_active !== false} />
                   </div>
 
                   <div className="space-y-2 text-sm text-gray-600">
-                    <p>Code: {school.code || "Non défini"}</p>
-                    <p>Téléphone: {school.telephone || "Non défini"}</p>
-                    <p>Ville: {school.ville || "Non définie"}</p>
-                    <p>Pays: {school.pays || "Non défini"}</p>
+                    <p>Código: {school.code || "Não definido"}</p>
+                    <p>Telefone: {school.phone || "Não definido"}</p>
+                    <p>Cidade: {school.city || "Não definida"}</p>
+                    <p>País: {school.country || "Não definido"}</p>
                   </div>
 
                   <div className="mt-4 grid grid-cols-2 gap-2">
-                    <ActionButton label="Voir" onClick={() => openDetailsModal(school)} full />
-                    <ActionButton label="Modifier" onClick={() => openEditModal(school)} full />
-                    {school.actif === false ? (
-                      <ActionButton label="Réactiver" onClick={() => activateSchool(school)} green full />
+                    <ActionButton label="Ver" onClick={() => openDetailsModal(school)} full />
+                    <ActionButton label="Editar" onClick={() => openEditModal(school)} full />
+                    {school.is_active === false ? (
+                      <ActionButton label="Reativar" onClick={() => activateSchool(school)} green full />
                     ) : (
-                      <ActionButton label="Désactiver" onClick={() => openConfirmModal(school)} red full />
+                      <ActionButton label="Desativar" onClick={() => openConfirmModal(school)} red full />
                     )}
                   </div>
                 </div>
@@ -465,31 +464,31 @@ export default function SchoolsPage() {
 
       {modalOpen && (
         <Modal
-          title={selected ? "Modifier l'école" : "Créer une nouvelle école"}
+          title={selected ? "Editar Escola" : "Criar Nova Escola"}
           onClose={() => setModalOpen(false)}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input label="Nom de l'école" required value={form.nom} onChange={(v) => setForm({ ...form, nom: v })} />
-            <Input label="Code" value={form.code} onChange={(v) => setForm({ ...form, code: v })} />
+            <Input label="Nome da Escola" required value={form.name} onChange={(v) => setForm({ ...form, name: v })} />
+            <Input label="Código" value={form.code} onChange={(v) => setForm({ ...form, code: v })} />
             <Input label="Email" required value={form.email} onChange={(v) => setForm({ ...form, email: v })} />
-            <Input label="Téléphone" value={form.telephone} onChange={(v) => setForm({ ...form, telephone: v })} />
-            <Input label="Ville" value={form.ville} onChange={(v) => setForm({ ...form, ville: v })} />
-            <Input label="Pays" value={form.pays} onChange={(v) => setForm({ ...form, pays: v })} />
+            <Input label="Telefone" value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} />
+            <Input label="Cidade" value={form.city} onChange={(v) => setForm({ ...form, city: v })} />
+            <Input label="País" value={form.country} onChange={(v) => setForm({ ...form, country: v })} />
             <div className="md:col-span-2">
-              <Input label="Adresse" value={form.adresse} onChange={(v) => setForm({ ...form, adresse: v })} />
+              <Input label="Endereço" value={form.address} onChange={(v) => setForm({ ...form, address: v })} />
             </div>
 
             {!selected && (
               <div className="md:col-span-2">
                 <Input
-                  label="Mot de passe administrateur"
+                  label="Senha do Administrador"
                   required
                   type="password"
                   value={form.password}
                   onChange={(v) => setForm({ ...form, password: v })}
                 />
                 <p className="text-xs text-gray-500 mt-2">
-                  Ce mot de passe sera utilisé pour créer le compte administrateur de cette école.
+                  Esta senha será usada para criar a conta de administrador desta escola.
                 </p>
               </div>
             )}
@@ -500,7 +499,7 @@ export default function SchoolsPage() {
               onClick={() => setModalOpen(false)}
               className="cursor-pointer rounded-xl border border-gray-200 px-5 py-3 text-sm font-semibold hover:bg-gray-50 transition"
             >
-              Annuler
+              Cancelar
             </button>
 
             <button
@@ -508,33 +507,33 @@ export default function SchoolsPage() {
               disabled={saving}
               className="cursor-pointer rounded-xl bg-blue-700 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-800 disabled:opacity-60 transition"
             >
-              {saving ? "Enregistrement..." : selected ? "Mettre à jour" : "Créer l'école"}
+              {saving ? "Salvando..." : selected ? "Atualizar" : "Criar Escola"}
             </button>
           </div>
         </Modal>
       )}
 
       {detailsOpen && selected && (
-        <Modal title="Détails de l'école" onClose={() => setDetailsOpen(false)}>
+        <Modal title="Detalhes da Escola" onClose={() => setDetailsOpen(false)}>
           <div className="space-y-4">
             <div className="flex items-center gap-4 rounded-3xl bg-blue-50 p-4">
               <div className="h-14 w-14 rounded-2xl bg-blue-700 text-white flex items-center justify-center font-bold">
-                {getInitials(selected.nom)}
+                {getInitials(selected.name)}
               </div>
 
               <div>
-                <h3 className="font-bold text-lg">{selected.nom}</h3>
+                <h3 className="font-bold text-lg">{selected.name}</h3>
                 <p className="text-sm text-gray-500">{selected.email}</p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <Info label="Code" value={selected.code} />
-              <Info label="Téléphone" value={selected.telephone} />
-              <Info label="Ville" value={selected.ville} />
-              <Info label="Pays" value={selected.pays} />
-              <Info label="Adresse" value={selected.adresse} />
-              <Info label="Statut" value={selected.actif === false ? "Désactivée" : "Active"} />
+              <Info label="Código" value={selected.code} />
+              <Info label="Telefone" value={selected.phone} />
+              <Info label="Cidade" value={selected.city} />
+              <Info label="País" value={selected.country} />
+              <Info label="Endereço" value={selected.address} />
+              <Info label="Status" value={selected.is_active === false ? "Desativada" : "Ativa"} />
             </div>
 
             <div className="flex justify-end gap-3 pt-3">
@@ -545,7 +544,7 @@ export default function SchoolsPage() {
                 }}
                 className="cursor-pointer rounded-xl bg-blue-700 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-800 transition"
               >
-                Modifier
+                Editar
               </button>
             </div>
           </div>
@@ -553,15 +552,15 @@ export default function SchoolsPage() {
       )}
 
       {confirmOpen && selected && (
-        <Modal title="Désactiver cette école ?" onClose={() => setConfirmOpen(false)}>
+        <Modal title="Desativar esta escola?" onClose={() => setConfirmOpen(false)}>
           <p className="text-sm text-gray-600 leading-6">
-            Cette action va désactiver l'école, ses utilisateurs, ses élèves,
-            ses professeurs, ses classes et ses matières. Vous pourrez réactiver
-            l'école plus tard.
+            Esta ação desativará a escola, seus usuários, alunos,
+            professores, classes e matérias. Você poderá reativar
+            a escola mais tarde.
           </p>
 
           <div className="rounded-2xl bg-red-50 border border-red-100 p-4 mt-4 text-red-700 text-sm">
-            École sélectionnée: <strong>{selected.nom}</strong>
+            Escola selecionada: <strong>{selected.name}</strong>
           </div>
 
           <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 mt-6">
@@ -569,7 +568,7 @@ export default function SchoolsPage() {
               onClick={() => setConfirmOpen(false)}
               className="cursor-pointer rounded-xl border border-gray-200 px-5 py-3 text-sm font-semibold hover:bg-gray-50 transition"
             >
-              Annuler
+              Cancelar
             </button>
 
             <button
@@ -577,7 +576,7 @@ export default function SchoolsPage() {
               disabled={saving}
               className="cursor-pointer rounded-xl bg-red-600 px-5 py-3 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60 transition"
             >
-              {saving ? "Désactivation..." : "Désactiver"}
+              {saving ? "Desativando..." : "Desativar"}
             </button>
           </div>
         </Modal>

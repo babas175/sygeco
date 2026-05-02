@@ -5,10 +5,17 @@ export const API_URL = "http://localhost:3001";
 
 export const api = axios.create({
   baseURL: API_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
 api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const token = getToken();
+
+  if (!config.headers) {
+    config.headers = {} as any;
+  }
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -24,6 +31,10 @@ api.interceptors.response.use(
 
     if (status === 401) {
       logout();
+
+      if (typeof globalThis !== "undefined") {
+        globalThis.location.href = "/login";
+      }
     }
 
     return Promise.reject(error);
